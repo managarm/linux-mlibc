@@ -71,12 +71,18 @@ packages:
 
   - name: attr
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Extended attributes tools
+      description: This package contains utilities to administer the extended attributes of filesystem objects.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://savannah.nongnu.org/projects/attr'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/attr.git'
-      tag: 'v2.5.1'
-      version: '2.5.1'
+      tag: 'v2.5.2'
+      version: '2.5.2'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -92,7 +98,7 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
-        - '--docdir=/usr/share/doc/attr-2.5.1'
+        - '--docdir=/usr/share/doc/attr-2.5.2'
         - '--disable-nls'
     build:
       - args: ['make', '-j@PARALLELISM@']
