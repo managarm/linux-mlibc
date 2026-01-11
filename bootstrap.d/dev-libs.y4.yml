@@ -701,23 +701,29 @@ packages:
 
   - name: libiconv
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: GNU charset conversion library for libc which doesn't implement it
+      description: GNU charset conversion library for libc which doesn't implement it.
+      spdx: 'LGPL-2.1-or-later GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/libiconv/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/libiconv.git'
-      # Last release tag is broken for us, use current master (07-12-2020)
-      branch: 'master'
-      commit: '0eb1068ceb77ba383c3ce2fc391ab40ef686c491'
-      version: '1.16'
+      git: 'https://https.git.savannah.gnu.org/git/libiconv.git'
+      tag: 'v1.17'
+      version: '1.17'
+      sources_required:
+        - gnulib
       tools_required:
-        - cross-toolchain
+        - cross-autoconf-v2.69
+        - cross-automake-v1.15
+        - cross-libtool
+        - cross-pkg-config
         - cross-autoconf-archive
         - cross-gettext
       regenerate:
-        - args: ['./gitsub.sh', 'pull']
-        # Gnulib broke on commit e3174b6d1fdbe6ea2297bf8c8333f65f9d9d9588, so check out the one before that.
-        - args: ['git', 'checkout', '766ec17a90f67e8cda78394e58a7fffb00f5a4b7']
-          workdir: '@THIS_SOURCE_DIR@/gnulib'
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
@@ -748,8 +754,6 @@ packages:
         - args: ['autoreconf', '-fvi', '-I@THIS_SOURCE_DIR@/m4', '-I@THIS_SOURCE_DIR@/srcm4']
     tools_required:
       - cross-toolchain
-      - cross-gettext
-      - cross-bison
     pkgs_required:
       - mlibc
     revision: 1
