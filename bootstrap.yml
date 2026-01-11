@@ -48,18 +48,6 @@ sources:
     tag: 'managarm/binutils-2_43_1'
     version: '2.43.1'
 
-  - name: gcc
-    subdir: ports
-    git: 'https://github.com/managarm/gcc.git'
-    tag: 'managarm/gcc-14_2_0'
-    version: '14.2.0'
-    tools_required:
-      - cross-autoconf-v2.69
-      - cross-automake-v1.11
-    regenerate:
-      - args: ['autoconf']
-        workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
-
   - name: linux
     subdir: ports
     url: 'https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.8.tar.xz'
@@ -214,53 +202,6 @@ tools:
       - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
     install:
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
-
-  - name: cross-gcc
-    architecture: '@OPTION:arch@'
-    from_source: gcc
-    tools_required:
-      - cross-binutils
-    revision: 1
-    configure:
-      - args:
-          - '@THIS_SOURCE_DIR@/configure'
-          - '--prefix=@PREFIX@'
-          - '--with-sysroot=@SYSROOT_DIR@'
-          - '--target=@OPTION:arch-triple@'
-          - '--enable-languages=c,c++'
-          - '--disable-multilib'
-          - '--disable-nls'
-          - '--enable-initfini-array'
-          - '--enable-libstdcxx-filesystem-ts'
-    stages:
-      - name: compiler
-        pkgs_required:
-          - mlibc-headers
-        compile:
-          - args: ['make', '-j@PARALLELISM@', 'all-gcc']
-        install:
-          - args: ['make', 'install-gcc']
-          - args: ['mkdir', '-p', '@PREFIX@/@OPTION:arch-triple@/bin']
-          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/as', '@PREFIX@/@OPTION:arch-triple@/bin/as']
-          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/ld', '@PREFIX@/@OPTION:arch-triple@/bin/ld']
-      - name: libgcc
-        tools_required:
-          - tool: cross-gcc
-            stage_dependencies: [compiler]
-        pkgs_required:
-          - mlibc
-        compile:
-          - args: ['make', '-j@PARALLELISM@', 'all-target-libgcc']
-        install:
-          - args: ['make', 'install-target-libgcc']
-      - name: libstdc++
-        tools_required:
-          - tool: cross-gcc
-            stage_dependencies: [libgcc]
-        compile:
-          - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
-        install:
-          - args: ['make', 'install-strip-target-libstdc++-v3']
 
   - name: cross-toolchain
     architecture: '@OPTION:arch@'
