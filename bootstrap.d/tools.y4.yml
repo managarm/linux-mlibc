@@ -5,6 +5,13 @@ sources:
     tag: 'v2019.01.06'
     version: '2019.01.06'
 
+  - name: autoconf-v2.69
+    subdir: ports
+    url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
+    format: 'tar.xz'
+    extract_path: 'autoconf-2.69'
+    version: '2.69'
+
 tools:
   - name: cross-autoconf-archive
     architecture: '@OPTION:arch@'
@@ -36,6 +43,17 @@ tools:
       - args: ['/bin/bash', '@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
         environ:
           'CONFIG_SHELL': '/bin/bash'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+  - name: cross-autoconf-v2.69
+    architecture: '@OPTION:arch@'
+    from_source: autoconf-v2.69
+    revision: 1
+    configure:
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:

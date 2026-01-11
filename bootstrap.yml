@@ -42,13 +42,6 @@ imports:
   - file: bootstrap.d/x11-themes.y4.yml
 
 sources:
-  - name: autoconf-v2.69
-    subdir: ports
-    url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
-    format: 'tar.xz'
-    extract_path: 'autoconf-2.69'
-    version: '2.69'
-
   - name: automake-v1.15
     subdir: ports
     git: 'https://git.savannah.gnu.org/git/automake.git'
@@ -254,17 +247,6 @@ tools:
           fi
           mkdir @PREFIX@/bin
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
-
-  - name: cross-autoconf-v2.69
-    architecture: '@OPTION:arch@'
-    from_source: autoconf-v2.69
-    revision: 1
-    configure:
-      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
 
   - name: cross-automake-v1.11
     labels: [aarch64, riscv64]
