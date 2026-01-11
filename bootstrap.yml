@@ -266,32 +266,6 @@ tools:
     install:
       - args: ['make', 'install']
 
-  - name: cross-autoconf-v2.64
-    labels: [aarch64]
-    architecture: noarch
-    source:
-      name: autoconf-v2.64
-      subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.64.tar.xz'
-      format: 'tar.xz'
-      checksum: blake2b:598873209a67725150cd4cf09c4b78b26b3d1782f259846da48dc8106a1d32ae2b24f3a864c3be0e9e8dc7d6b6ca8781b83ff33a691c88e68391d1ea861ccf23
-      extract_path: 'autoconf-2.64'
-      version: '2.64'
-    revision: 1
-    configure:
-      # Despite its efforts to be POSIX-compatible, autoconf 2.64 fails to configure on dash
-      # (as it assumes that echo does not evaluate backslash escapes).
-      # It *also* fails when setting CONFIG_SHELL to /bin/bash.
-      # The manual (in section "Defining Variables") mentions this bug and the following
-      # workaround: We set *both* CONFIG_SHELL *and* execute the script using /bin/bash.
-      - args: ['/bin/bash', '@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
-        environ:
-          'CONFIG_SHELL': '/bin/bash'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
-
   - name: cross-automake-v1.11
     labels: [aarch64, riscv64]
     architecture: noarch
