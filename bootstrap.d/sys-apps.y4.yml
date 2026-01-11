@@ -1,10 +1,11 @@
 sources:
   - name: coreutils
-    subdir: ports
-    url: 'https://ftpmirror.gnu.org/gnu/coreutils/coreutils-9.0.tar.xz'
-    format: 'tar.xz'
-    extract_path: 'coreutils-9.0'
-    version: '9.0'
+    subdir: 'ports'
+    url: 'https://ftpmirror.gnu.org/gnu/coreutils/coreutils-9.6.tar.xz'
+    format: tar.xz
+    checksum: 'blake2b:4070d3d272851d3e9c326df9c05ce67797d86852e7f5c26e545f987f444295f2cfca24e8569514d7b5edf8fd50318d07cb20dea4a4ce8c65b34bea0c5a9177be'
+    extract_path: 'coreutils-9.6'
+    version: '9.6'
     tools_required:
       - cross-automake-v1.15
     regenerate:
@@ -132,7 +133,13 @@ packages:
 
   - name: coreutils
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Standard GNU utilities (chmod, cp, dd, ls, sort, tr, head, wc, who,...)
+      description: This package contains the basic utility programs needed by every operating system.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/coreutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     from_source: coreutils
     tools_required:
       - cross-toolchain
@@ -140,6 +147,7 @@ packages:
       - mlibc
       - acl
       - attr
+      - libiconv
     revision: 1
     configure:
       - args:
