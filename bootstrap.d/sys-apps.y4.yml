@@ -39,12 +39,18 @@ tools:
 packages:
   - name: acl
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Access control list utilities, libraries, and headers
+      description: This package contains utilities to administer Access Control Lists, which are used to define fine-grained discretionary access rights for files and directories.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://savannah.nongnu.org/projects/acl'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/acl.git'
-      tag: 'v2.3.1'
-      version: '2.3.1'
+      tag: 'v2.3.2'
+      version: '2.3.2'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -61,7 +67,7 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
-        - '--docdir=/usr/share/doc/acl-2.3.1'
+        - '--docdir=/usr/share/doc/acl-2.3.2'
         - '--disable-nls'
     build:
       - args: ['make', '-j@PARALLELISM@']
