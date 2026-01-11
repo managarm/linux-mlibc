@@ -396,7 +396,13 @@ packages:
 
   - name: gmp
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Library for arbitrary-precision arithmetic on different type of numbers
+      description: The GMP package contains math libraries. These have useful functions for arbitrary precision arithmetic.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://gmplib.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       # We switched to a tarball as the GMP repos are currently returning 403 forbidden (2024-12-31)
