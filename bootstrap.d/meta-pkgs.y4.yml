@@ -1,0 +1,28 @@
+packages:
+  # Meta package with the bare minimum to chroot and be useful. Later to expand into a base system.
+  - name: base
+    architecture: noarch
+    metadata:
+      summary: Minimum meta-package to provide a useful environment
+      description: This meta-package provides a useful terminal only environment with various common unix tools and the xbps package manager.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['meta-pkgs']
+    source:
+      subdir: meta-sources
+      version: '1.0'
+    pkgs_required:
+      - mlibc
+      - base-files
+      - tzdata
+      - bash
+      - coreutils
+      - libgcc
+      - libstdc++
+      - libatomic
+      - libquadmath
+      - libssp
+    revision: 12
+    configure: []
+    build: []
