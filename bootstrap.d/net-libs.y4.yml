@@ -234,12 +234,19 @@ packages:
 
   - name: libtirpc
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Transport Independent RPC library (SunRPC replacement)
+      description: This package contains libraries that support programs that use the Remote Procedure Call (RPC) API. It replaces the RPC, but not the NIS library entries that used to be in glibc.
+      spdx: 'BSD-2-Clause BSD-3-Clause BSD-4-Clause LGPL-2.1-or-later'
+      website: 'https://sourceforge.net/projects/libtirpc/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'git://git.linux-nfs.org/projects/steved/libtirpc.git'
-      tag: 'libtirpc-1-3-2'
-      version: '1.3.2'
+      # The generated configure script breaks in 1.3.6 and up?
+      tag: 'libtirpc-1-3-5'
+      version: '1.3.5'
       tools_required:
         - cross-toolchain
       regenerate:
