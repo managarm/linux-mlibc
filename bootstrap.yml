@@ -42,20 +42,6 @@ imports:
   - file: bootstrap.d/x11-themes.y4.yml
 
 sources:
-  - name: pkg-config
-    subdir: ports
-    git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
-    tag: 'pkg-config-0.29.2'
-    version: '0.29.2'
-    tools_required:
-      - cross-autoconf-v2.69
-      - cross-automake-v1.15
-      - cross-libtool
-    regenerate:
-      - args: ['./autogen.sh']
-        environ:
-          NOCONFIGURE: 'yes'
-
   - name: binutils
     subdir: 'ports'
     git: 'https://github.com/managarm/binutils-gdb.git'
@@ -215,18 +201,6 @@ tools:
           fi
           mkdir @PREFIX@/bin
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
-
-  - name: cross-pkg-config
-    architecture: '@OPTION:arch@'
-    exports_aclocal: true
-    from_source: pkg-config
-    revision: 1
-    configure:
-      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@', '--with-internal-glib']
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
 
   - name: cross-binutils
     architecture: '@OPTION:arch@'
