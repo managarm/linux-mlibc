@@ -71,16 +71,9 @@ sources:
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
-    commit: '5bc20bde80bbffe1cdd5a2c421279314440728ce'
+    commit: '3208ea181166d9bac9ae142a85a3171d2195a7c3'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
-    # sources_required:
-    #   - libdrm
-    #   - managarm
-    #   - bragi
-    # regenerate:
-    #   - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
-    #   - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: gnuconfig
     subdir: 'ports'
