@@ -335,6 +335,13 @@ packages:
 
   - name: readline
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Another cute console display library
+      description: This package contains a set of libraries that offer command-line editing and history capabilities.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://savannah.gnu.org/projects/readline'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-libs']
     from_source: readline
     tools_required:
       - cross-toolchain
@@ -349,11 +356,15 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-multibyte'
+        - '--with-curses'
+        - '--docdir=/usr/share/doc/readline-8.1'
     build:
-      - args: ["make", "-j@PARALLELISM@"]
-      - args: ["make", "DESTDIR=@THIS_COLLECT_DIR@", "install"]
+      - args: ['make', 'SHLIB_LIBS="-lncursesw"', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         environ:
-          DESTDIR: "@THIS_COLLECT_DIR@"
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['patchelf', '--set-soname', 'libreadline.so.8', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so.8']
+      - args: ['patchelf', '--set-soname', 'libhistory.so.8', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so.8']
 
   - name: tzdata
     architecture: '@OPTION:arch@'
