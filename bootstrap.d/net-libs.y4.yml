@@ -109,12 +109,18 @@ packages:
 
   - name: libnsl
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Public client interface for NIS(YP) in a IPv6 ready version
+      description: This package contains the public client interface for NIS(YP). It replaces the NIS library that used to be in glibc.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/thkukuk/libnsl'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['net-libs']
     source:
       subdir: ports
       git: 'https://github.com/thkukuk/libnsl.git'
-      tag: 'v2.0.0'
-      version: '2.0.0'
+      tag: 'v2.0.1'
+      version: '2.0.1'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -123,6 +129,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
+      - libintl
       - libtirpc
     revision: 1
     configure:
