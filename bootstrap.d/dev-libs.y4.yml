@@ -1138,13 +1138,20 @@ packages:
 
   - name: mpfr
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Library for multiple-precision floating-point computations with exact rounding
+      description: The MPFR package contains functions for multiple precision math.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://www.mpfr.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz'
+      url: 'https://ftpmirror.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.xz'
       format: 'tar.xz'
-      extract_path: 'mpfr-4.1.0'
-      version: '4.1.0'
+      checksum: blake2b:6bbf5658e70fbb673a3b65246a6bac708d1571aa6943c6742efd92f468ac71e6f0fe351b757f7133440ea312d9a5fc3549acd89d54f4d975c58bdc204d7b21ec
+      extract_path: 'mpfr-4.2.2'
+      version: '4.2.2'
       tools_required:
         - cross-autoconf-archive
         - cross-toolchain
@@ -1163,7 +1170,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-static=no'
         - '--enable-shared=yes'
-        - '--docdir=/usr/share/doc/mpfr-4.0.2'
+        - '--docdir=/usr/share/doc/mpfr-4.2.2'
         - '--with-pic'
         environ:
           # MPFR's configuration script misdetects cross-compilations. Hence,
