@@ -395,7 +395,7 @@ packages:
       # Create the posixrules file, POSIX requires daylight saving rules to be in accordance with US rules, thus use New York
       - args: ['/usr/sbin/zic', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo', '-p', 'America/New_York']
       # Default to UTC for localtime, this should be fixed, but that is pending xbstrap support.
-      - args: ['ln', '-sf', '/usr/share/zoneinfo/UTC', '@THIS_COLLECT_DIR@/etc/localtime"]
+      - args: ['ln', '-sf', '/usr/share/zoneinfo/UTC', '@THIS_COLLECT_DIR@/etc/localtime']
 
   - name: zlib
     architecture: '@OPTION:arch@'
