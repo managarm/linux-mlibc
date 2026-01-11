@@ -819,7 +819,13 @@ packages:
 
   - name: libintl
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The GNU international library (split out of gettext)
+      description: The GNU international library (split out of gettext)
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gnu.org/software/gettext/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['dev-libs']
     from_source: gettext
     tools_required:
       - cross-toolchain
