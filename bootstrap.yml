@@ -42,12 +42,6 @@ imports:
   - file: bootstrap.d/x11-themes.y4.yml
 
 sources:
-  - name: binutils
-    subdir: 'ports'
-    git: 'https://github.com/managarm/binutils-gdb.git'
-    tag: 'managarm/binutils-2_43_1'
-    version: '2.43.1'
-
   - name: linux
     subdir: ports
     url: 'https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.8.tar.xz'
@@ -182,26 +176,6 @@ tools:
           fi
           mkdir @PREFIX@/bin
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
-
-  - name: cross-binutils
-    architecture: '@OPTION:arch@'
-    from_source: binutils
-    tools_required:
-      - cross-automake-v1.15
-    revision: 1
-    configure:
-      - args:
-          - '@THIS_SOURCE_DIR@/configure'
-          - '--prefix=@PREFIX@'
-          - '--with-sysroot=@SYSROOT_DIR@'
-          - '--target=@OPTION:arch-triple@'
-          - '--disable-nls'
-          - '--disable-werror'
-          - '--disable-gdb'
-    compile:
-      - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
-    install:
-      - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
 
   - name: cross-toolchain
     architecture: '@OPTION:arch@'
