@@ -8,8 +8,8 @@ sources:
   - name: ncurses
     subdir: ports
     git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
-    tag: 'v6_2'
-    version: '6.2'
+    tag: 'v6_5'
+    version: '6.5'
 
   - name: readline
     subdir: ports
@@ -260,6 +260,13 @@ packages:
 
   - name: ncurses
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Console display library
+      description: This package contains libraries for terminal-independent handling of character screens.
+      spdx: 'MIT'
+      website: 'https://www.gnu.org/software/ncurses/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-libs']
     from_source: ncurses
     tools_required:
       - cross-toolchain
@@ -274,14 +281,13 @@ packages:
         - '--without-ada'
         - '--enable-pc-files'
         - '--with-shared'
+        - '--with-cxx-shared'
         - '--without-normal'
         - '--with-manpage-format=normal'
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
         - '--with-termlib'
         - '--enable-widec'
         - '--disable-stripping'
-        environ:
-          cf_cv_func_nanosleep: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
