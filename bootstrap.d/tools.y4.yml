@@ -1,0 +1,16 @@
+sources:
+  - name: autoconf-archive
+    subdir: ports
+    git: 'https://github.com/autoconf-archive/autoconf-archive.git'
+    tag: 'v2019.01.06'
+    version: '2019.01.06'
+
+tools:
+  - name: cross-autoconf-archive
+    architecture: '@OPTION:arch@'
+    from_source: autoconf-archive
+    exports_aclocal: true
+    revision: 1
+    install:
+      - args: ['mkdir', '-p', '@BUILD_ROOT@/tools/cross-autoconf-archive/share/']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/m4', '@BUILD_ROOT@/tools/cross-autoconf-archive/share/aclocal']

@@ -33,6 +33,7 @@ imports:
   - file: bootstrap.d/sys-libs.y4.yml
   - file: bootstrap.d/sys-process.y4.yml
   - file: bootstrap.d/tasks.y4.yml
+  - file: bootstrap.d/tools.y4.yml
   - file: bootstrap.d/www-client.y4.yml
   - file: bootstrap.d/x11-apps.y4.yml
   - file: bootstrap.d/x11-base.y4.yml
@@ -47,12 +48,6 @@ sources:
     format: 'tar.xz'
     extract_path: 'autoconf-2.69'
     version: '2.69'
-
-  - name: autoconf-archive
-    subdir: ports
-    git: 'https://github.com/autoconf-archive/autoconf-archive.git'
-    tag: 'v2019.01.06'
-    version: '2019.01.06'
 
   - name: automake-v1.15
     subdir: ports
@@ -298,15 +293,6 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
-
-  - name: cross-autoconf-archive
-    architecture: '@OPTION:arch@'
-    from_source: autoconf-archive
-    exports_aclocal: true
-    revision: 1
-    install:
-      - args: ['mkdir', '-p', '@BUILD_ROOT@/tools/cross-autoconf-archive/share/']
-      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/m4', '@BUILD_ROOT@/tools/cross-autoconf-archive/share/aclocal']
 
   - name: cross-autoconf-v2.64
     labels: [aarch64]
