@@ -2,8 +2,8 @@ sources:
   - name: 'cmake'
     subdir: 'ports'
     git: 'https://gitlab.kitware.com/cmake/cmake.git'
-    tag: 'v3.22.0'
-    version: '3.22.0'
+    tag: 'v4.2.1'
+    version: '4.2.1'
 
 tools:
   - name: cross-cmake
@@ -19,7 +19,6 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
-      # - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.22/Modules/Platform/']
 
 packages:
   - name: cmake
