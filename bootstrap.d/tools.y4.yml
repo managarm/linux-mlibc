@@ -12,6 +12,16 @@ sources:
     extract_path: 'autoconf-2.69'
     version: '2.69'
 
+  - name: automake-v1.15
+    subdir: ports
+    git: 'https://git.savannah.gnu.org/git/automake.git'
+    tag: 'v1.15.1'
+    version: '1.15.1'
+    tools_required:
+      - cross-autoconf-v2.69
+    regenerate:
+      - args: ['./bootstrap']
+
 tools:
   - name: cross-autoconf-archive
     architecture: '@OPTION:arch@'
@@ -86,3 +96,17 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+
+  - name: cross-automake-v1.15
+    architecture: '@OPTION:arch@'
+    from_source: automake-v1.15
+    tools_required:
+      - cross-autoconf-v2.69
+    revision: 1
+    configure:
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@', 'MAKEINFO=/bin/true']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
