@@ -23,6 +23,12 @@ sources:
     regenerate:
       - args: ['autoreconf', '-f', '-i']
 
+  - name: util-linux
+    subdir: ports
+    git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
+    tag: 'v2.41.3'
+    version: '2.41.3'
+
 tools:
   - name: cross-file
     architecture: '@OPTION:arch@'
@@ -757,18 +763,10 @@ packages:
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/../../meta-sources/base-files/inittab', '@THIS_COLLECT_DIR@/etc/inittab']
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/../../meta-sources/base-files/fstab', '@THIS_COLLECT_DIR@/etc/fstab']
 
-  - name: util-linux
+  - name: util-linux-libs
     architecture: '@OPTION:arch@'
     stability_level: 'broken'
-    source:
-      subdir: ports
-      git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
-      tag: 'v2.41.2'
-      version: '2.41.2'
-      # tools_required:
-      #   - cross-toolchain
-      # regenerate:
-      #   - args: ['./autogen.sh']
+    from_source: util-linux
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -777,11 +775,10 @@ packages:
       - mlibc
       - file
       - libiconv
-      - libintl
-      - libxcrypt
       - ncurses
       - readline
       - zlib
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -791,6 +788,8 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--default-library=shared'
+        - '-Dfs-search-path-extra=/usr/sbin:/bin:/usr/bin'
         - '-Dbuild-python=disabled'
         - '-Dbuild-bits=disabled'
         - '-Dbuild-ldattach=disabled'
@@ -800,6 +799,107 @@ packages:
         - '-Dbuild-ipcrm=disabled'
         - '-Dbuild-ipcs=disabled'
         - '-Dbuild-lsfd=disabled'
+        - '-Dbuild-fdisks=disabled'
+        - '-Dbuild-mount=disabled'
+        - '-Dbuild-swapon=disabled'
+        - '-Dbuild-swapoff=disabled'
+        - '-Dbuild-liblastlog2=disabled'
+        - '-Dbuild-chcpu=disabled'
+        - '-Dbuild-losetup=disabled'
+        - '-Dbuild-zramctl=disabled'
+        - '-Dbuild-lsns=disabled'
+        - '-Dbuild-mkfs=disabled'
+        - '-Dbuild-fsck=disabled'
+        - '-Dbuild-partx=disabled'
+        - '-Dbuild-script=disabled'
+        - '-Dbuild-scriptutils=disabled'
+        - '-Dbuild-col=disabled'
+        - '-Dbuild-colcrt=disabled'
+        - '-Dbuild-colrm=disabled'
+        - '-Dbuild-rev=disabled'
+        - '-Dbuild-uuidd=disabled'
+        - '-Dbuild-choom=disabled'
+        - '-Dbuild-isosize=disabled'
+        - '-Dbuild-waitpid=disabled'
+        - '-Dbuild-wipefs=disabled'
+        - '-Dbuild-mountpoint=disabled'
+        - '-Dbuild-fallocate=disabled'
+        - '-Dbuild-setpriv=disabled'
+        - '-Dbuild-hardlink=disabled'
+        - '-Dbuild-eject=disabled'
+        - '-Dbuild-agetty=disabled'
+        - '-Dbuild-cramfs=disabled'
+        - '-Dbuild-bfs=disabled'
+        - '-Dbuild-minix=disabled'
+        - '-Dbuild-fdformat=disabled'
+        - '-Dbuild-blockdev=disabled'
+        - '-Dbuild-hwclock=disabled'
+        - '-Dbuild-lslogins=disabled'
+        - '-Dbuild-wdctl=disabled'
+        - '-Dbuild-cal=disabled'
+        - '-Dbuild-logger=disabled'
+        - '-Dbuild-look=disabled'
+        - '-Dbuild-mcookie=disabled'
+        - '-Dbuild-namei=disabled'
+        - '-Dbuild-whereis=disabled'
+        - '-Dbuild-lsblk=disabled'
+        - '-Dbuild-lslocks=disabled'
+        - '-Dbuild-findmnt=disabled'
+        - '-Dbuild-switch_root=disabled'
+        - '-Dbuild-pivot_root=disabled'
+        - '-Dbuild-flock=disabled'
+        - '-Dbuild-lsmem=disabled'
+        - '-Dbuild-lsirq=disabled'
+        - '-Dbuild-irqtop=disabled'
+        - '-Dbuild-chmem=disabled'
+        - '-Dbuild-ipcmk=disabled'
+        - '-Dbuild-ipcrm=disabled'
+        - '-Dbuild-ipcs=disabled'
+        - '-Dbuild-rfkill=disabled'
+        - '-Dbuild-tunelp=disabled'
+        - '-Dbuild-fstrim=disabled'
+        - '-Dbuild-dmesg=disabled'
+        - '-Dbuild-ctrlaltdel=disabled'
+        - '-Dbuild-exch=disabled'
+        - '-Dbuild-fsfreeze=disabled'
+        - '-Dbuild-blkdiscard=disabled'
+        - '-Dbuild-blkzone=disabled'
+        - '-Dbuild-blkpr=disabled'
+        - '-Dbuild-rtcwake=disabled'
+        - '-Dbuild-setarch=disabled'
+        - '-Dbuild-kill=disabled'
+        - '-Dbuild-last=disabled'
+        - '-Dbuild-utmpdump=disabled'
+        - '-Dbuild-line=disabled'
+        - '-Dbuild-mesg=disabled'
+        - '-Dbuild-line=disabled'
+        - '-Dbuild-mesg=disabled'
+        - '-Dbuild-raw=disabled'
+        - '-Dbuild-rename=disabled'
+        - '-Dbuild-vipw=disabled'
+        - '-Dbuild-newgrp=disabled'
+        - '-Dbuild-chfn-chsh=disabled'
+        - '-Dbuild-login=disabled'
+        - '-Dbuild-nologin=disabled'
+        - '-Dbuild-sulogin=disabled'
+        - '-Dbuild-su=disabled'
+        - '-Dbuild-runuser=disabled'
+        - '-Dbuild-ul=disabled'
+        - '-Dbuild-more=disabled'
+        - '-Dbuild-pg=disabled'
+        - '-Dbuild-pipesz=disabled'
+        - '-Dbuild-fadvise=disabled'
+        - '-Dbuild-enosys=disabled'
+        - '-Dbuild-lsclocks=disabled'
+        - '-Dbuild-getopt=disabled'
+        - '-Dbuild-setterm=disabled'
+        - '-Dbuild-schedutils=disabled'
+        - '-Dbuild-wall=disabled'
+        - '-Dbuild-write=disabled'
+        - '-Dbuild-bash-completion=disabled'
+        - '-Dbuild-pylibmount=disabled'
+        - '-Dbuild-hexdump=disabled'
+        - '-Dbuild-findfs=disabled'
         - '-Dprogram-tests=false'
         - '-Dnls=disabled'
         - '@THIS_SOURCE_DIR@'
@@ -808,6 +908,20 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/sbin']
+    subpackages:
+      # We need to add /usr/lib and /usr/lib64, because riscv doesn't use lib64 but aarch64 and amd64 do.
+      - name: libblkid
+        include: ['/usr/lib*/libblkid*', '/usr/include/blkid/*', '/usr/lib*/pkgconfig/blkid*', '/usr/share/man/man3/libblkid.3']
+      - name: libmount
+        include: ['/usr/lib*/libmount*', '/usr/include/libmount/*', '/usr/lib*/pkgconfig/mount*']
+      - name: libsmartcols
+        include: ['/usr/lib*/libsmartcols*', '/usr/include/libsmartcols/*', '/usr/lib*/pkgconfig/smartcols*', '/usr/share/man/man5/terminal-colors.d.5']
+      - name: libuuid
+        include: ['/usr/lib*/libuuid*', '/usr/include/uuid/*', '/usr/lib*/pkgconfig/uuid*', '/usr/share/man/man3/uuid*']
+      - name: libfdisk
+        include: ['/usr/lib*/libfdisk*', '/usr/include/libfdisk/*', '/usr/lib*/pkgconfig/fdisk*']
 
   - name: which
     architecture: '@OPTION:arch@'
