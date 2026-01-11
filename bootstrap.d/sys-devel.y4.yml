@@ -68,15 +68,18 @@ tools:
     revision: 1
     configure:
       - args:
-          - '@THIS_SOURCE_DIR@/configure'
-          - '--prefix=@PREFIX@'
-          - '--with-sysroot=@SYSROOT_DIR@'
-          - '--target=@OPTION:arch-triple@'
-          - '--enable-languages=c,c++'
-          - '--disable-multilib'
-          - '--disable-nls'
-          - '--enable-initfini-array'
-          - '--enable-libstdcxx-filesystem-ts'
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--with-sysroot=@SYSROOT_DIR@'
+        - '--target=@OPTION:arch-triple@'
+        - '--enable-languages=c,c++,lto'
+        - '--disable-multilib'
+        - '--disable-nls'
+        - '--enable-initfini-array'
+        - '--enable-libstdcxx-filesystem-ts'
+        - '--enable-linker-build-id'
+        - '--enable-default-pie'
+        - '--disable-fixincludes'
     stages:
       - name: compiler
         pkgs_required:
@@ -308,6 +311,8 @@ packages:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
+        - '--with-pkgversion=linux-mlibc'
+        - '--with-bugurl=https://github.com/managarm/linux-mlibc/issues/'
         - '--prefix=/usr'
         - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=/'
@@ -316,9 +321,12 @@ packages:
         - '--enable-initfini-array'
         - '--disable-multilib'
         - '--disable-nls'
+        - '--disable-fixincludes'
         - '--enable-lto'
         - '--with-system-zlib'
         - '--enable-libstdcxx-filesystem-ts'
+        - '--enable-linker-build-id'
+        - '--enable-default-pie'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -329,6 +337,18 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['ln', '-sf', 'gcc', '@THIS_COLLECT_DIR@/usr/bin/cc']
+    subpackages:
+      # We need to add /usr/lib and /usr/lib64, because riscv doesn't use lib64 but aarch64 and amd64 do.
+      - name: libatomic
+        include: ['/usr/lib*/libatomic*']
+      - name: libgcc
+        include: ['/usr/lib*/libgcc_s.so*', '/usr/lib/gcc/*-linux-mlibc/14.2.0/libgcc*']
+      - name: libssp
+        include: ['/usr/lib*/libssp*']
+      - name: libstdc++
+        include: ['/usr/include/**', '/usr/lib*/libstdc++*', '/usr/lib*/libsupc++.a', '/usr/share/gcc-14.2.0/**']
+      - name: libquadmath
+        include: ['/usr/lib*/libquadmath*']
 
   - name: gdb
     architecture: '@OPTION:arch@'
