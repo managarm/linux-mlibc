@@ -91,16 +91,27 @@ packages:
 
   - name: gdbm
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Standard GNU database libraries
+      description: This package contains the GNU Database Manager. It is a library of database functions that uses extensible hashing and works like the standard UNIX dbm. The library provides primitives for storing key/data pairs, searching and retrieving the data by its key and deleting a key along with its data.
+      spdx: 'GPL-3.0-only'
+      website: 'https://www.gnu.org/software/gdbm/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-libs']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
-      tag: 'v1.22'
-      version: '1.22'
+      tag: 'v1.25'
+      version: '1.25'
+      sources_required:
+        - gnulib
       tools_required:
-        - cross-toolchain
+        - cross-autoconf-v2.71
+        - cross-automake-v1.15
+        - cross-libtool
       regenerate:
-        - args: ['./bootstrap']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--no-po']
     tools_required:
       - cross-toolchain
     pkgs_required:
