@@ -211,22 +211,27 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name: linux-pam
+  - name: pam
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Standard PAM library
+      description: This package provides the Pluggable Authentication Modules (PAM) library.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/linux-pam/linux-pam'
+      maintainer: "no92 <leo@managarm.org> && Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
     source:
       subdir: ports
       git: 'https://github.com/linux-pam/linux-pam.git'
-      tag: 'v1.5.2'
-      version: '1.5.2'
-      tools_required:
-        - cross-toolchain
-      regenerate:
-        - args: ['./autogen.sh']
+      tag: 'v1.7.1'
+      version: '1.7.1'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - gdbm
       - libintl
       - libnsl
       - libtirpc
@@ -234,27 +239,25 @@ packages:
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--sbindir=/usr/sbin'
-        - '--sysconfdir=/etc'
-        - '--libdir=/usr/lib'
-        - '--enable-securedir=/usr/lib/security'
-        - '--docdir=/usr/share/doc/Linux-PAM-1.5.2'
-        - '--disable-doc'
+        - '-Ddocs=disabled'
+        - '-Di18n=enabled'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-      - args: ['chmod', '-v', '4755', '@THIS_COLLECT_DIR@/usr/sbin/unix_chkpwd']
       - args: ['install', '-v', '-m755', '-d', '@THIS_COLLECT_DIR@/etc/pam.d']
-      - args: ['cp', '-v', '@SOURCE_ROOT@/meta-sources/base-files/other.pam', '@THIS_COLLECT_DIR@/etc/pam.d/other']
-      - args: ['cp', '-v', '@SOURCE_ROOT@/meta-sources/base-files/system-account.pam', '@THIS_COLLECT_DIR@/etc/pam.d/system-account']
-      - args: ['cp', '-v', '@SOURCE_ROOT@/meta-sources/base-files/system-auth.pam', '@THIS_COLLECT_DIR@/etc/pam.d/system-auth']
-      - args: ['cp', '-v', '@SOURCE_ROOT@/meta-sources/base-files/system-session.pam', '@THIS_COLLECT_DIR@/etc/pam.d/system-session']
-      - args: ['cp', '-v', '@SOURCE_ROOT@/meta-sources/base-files/system-password.pam', '@THIS_COLLECT_DIR@/etc/pam.d/system-password']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/other', '@THIS_COLLECT_DIR@/etc/pam.d/other']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/system-account', '@THIS_COLLECT_DIR@/etc/pam.d/system-account']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/system-auth', '@THIS_COLLECT_DIR@/etc/pam.d/system-auth']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/system-session', '@THIS_COLLECT_DIR@/etc/pam.d/system-session']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/system-password', '@THIS_COLLECT_DIR@/etc/pam.d/system-password']
 
   - name: mtdev
     architecture: '@OPTION:arch@'

@@ -1,0 +1,65 @@
+From 15746138df01a1d29ab7e483f5dc28dc45798884 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 26 Jan 2026 23:15:33 +0100
+Subject: [PATCH] Fixes for mlibc
+
+---
+ libpam_misc/meson.build               | 2 +-
+ modules/module-meson.build            | 2 +-
+ modules/pam_namespace/pam_namespace.h | 1 +
+ modules/pam_unix/pam_unix_acct.c      | 1 +
+ 4 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/libpam_misc/meson.build b/libpam_misc/meson.build
+index e0bb30f..95216a5 100644
+--- a/libpam_misc/meson.build
++++ b/libpam_misc/meson.build
+@@ -18,7 +18,7 @@ libpam_misc = shared_library(
+   'pam_misc',
+   sources: libpam_misc_src,
+   include_directories: [libpam_misc_inc, libpamc_inc],
+-  dependencies: [libpam_internal_dep, libpam_dep],
++  dependencies: [libpam_internal_dep, libpam_dep, libintl],
+   link_depends: libpam_misc_link_deps,
+   link_args: libpam_misc_link_args,
+   version: libpam_misc_version,
+diff --git a/modules/module-meson.build b/modules/module-meson.build
+index dce38b9..cacfe92 100644
+--- a/modules/module-meson.build
++++ b/modules/module-meson.build
+@@ -284,7 +284,7 @@ if module == 'pam_faillock'
+     'faillock',
+     sources: ['main.c', 'faillock.c', 'faillock_config.c'],
+     link_args: exe_link_args,
+-    dependencies: [libpam_internal_dep, libpam_dep, libaudit],
++    dependencies: [libpam_internal_dep, libpam_dep, libaudit, libintl],
+     install: true,
+     install_dir: sbindir,
+   )
+diff --git a/modules/pam_namespace/pam_namespace.h b/modules/pam_namespace/pam_namespace.h
+index 8a7a66b..80e8f21 100644
+--- a/modules/pam_namespace/pam_namespace.h
++++ b/modules/pam_namespace/pam_namespace.h
+@@ -55,6 +55,7 @@
+ #include <fcntl.h>
+ #include <sched.h>
+ #include <glob.h>
++#include <signal.h>
+ #include "security/pam_modules.h"
+ #include "security/pam_modutil.h"
+ #include "security/pam_ext.h"
+diff --git a/modules/pam_unix/pam_unix_acct.c b/modules/pam_unix/pam_unix_acct.c
+index 961b766..7814159 100644
+--- a/modules/pam_unix/pam_unix_acct.c
++++ b/modules/pam_unix/pam_unix_acct.c
+@@ -50,6 +50,7 @@
+ #include <time.h>		/* for time() */
+ #include <errno.h>
+ #include <sys/wait.h>
++#include <signal.h>
+ 
+ #include <security/_pam_macros.h>
+ 
+-- 
+2.51.0
+
