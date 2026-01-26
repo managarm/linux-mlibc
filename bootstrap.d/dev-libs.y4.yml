@@ -23,8 +23,8 @@ sources:
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-70-1'
-    version: '70.1'
+    tag: 'release-78.2'
+    version: '78.2'
     tools_required:
       - cross-toolchain
     regenerate:
@@ -440,7 +440,13 @@ packages:
 
   - name: icu
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: International Components for Unicode
+      description: This package is a mature, widely used set of C/C++ libraries providing Unicode and Globalization support for software applications. ICU is widely portable and gives applications the same results on all platforms.
+      spdx: 'BSD'
+      website: 'https://icu.unicode.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     from_source: icu
     tools_required:
       - cross-toolchain
