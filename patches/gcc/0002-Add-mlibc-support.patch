@@ -1,4 +1,4 @@
-From 4fb34b44f08cd557449047138039c46395557d65 Mon Sep 17 00:00:00 2001
+From 1dbe497193b20e9d0b29446ab99435b2af67344a Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 11 Jan 2026 16:00:15 +0100
 Subject: [PATCH 2/2] Add mlibc support
@@ -6,9 +6,9 @@ Subject: [PATCH 2/2] Add mlibc support
 ---
  config.sub             |  4 ++--
  gcc/config.gcc         |  5 ++++-
- gcc/config/linux.h     | 39 +++++++++++++++++++++++++--------------
+ gcc/config/linux.h     | 41 +++++++++++++++++++++++++++--------------
  libstdc++-v3/configure |  2 +-
- 4 files changed, 32 insertions(+), 18 deletions(-)
+ 4 files changed, 34 insertions(+), 18 deletions(-)
 
 diff --git a/config.sub b/config.sub
 index 38f3d037a..45f663de8 100755
@@ -56,10 +56,10 @@ index dc350422f..1d59563b2 100644
        tm_defines="$tm_defines DEFAULT_LIBC=LIBC_GLIBC"
        ;;
 diff --git a/gcc/config/linux.h b/gcc/config/linux.h
-index a7248ac90..5fe984040 100644
+index a7248ac90..f6c7b8661 100644
 --- a/gcc/config/linux.h
 +++ b/gcc/config/linux.h
-@@ -34,18 +34,21 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+@@ -34,23 +34,28 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
  #define OPTION_BIONIC_P(opts)	(DEFAULT_LIBC == LIBC_BIONIC)
  #undef OPTION_MUSL_P
  #define OPTION_MUSL_P(opts)	(DEFAULT_LIBC == LIBC_MUSL)
@@ -81,7 +81,14 @@ index a7248ac90..5fe984040 100644
  
  #define GNU_USER_TARGET_OS_CPP_BUILTINS()			\
      do {							\
-@@ -63,21 +66,24 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ 	if (OPTION_GLIBC)					\
+ 	  builtin_define ("__gnu_linux__");			\
++	if (OPTION_MLIBC)					\
++	  builtin_define ("__mlibc__");				\
+ 	builtin_define_std ("linux");				\
+ 	builtin_define_std ("unix");				\
+ 	builtin_assert ("system=linux");			\
+@@ -63,21 +68,24 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
     -muclibc or -mglibc or -mbionic or -mmusl has been passed to change
     the default.  */
  
@@ -116,7 +123,7 @@ index a7248ac90..5fe984040 100644
  #else
  #error "Unsupported DEFAULT_LIBC"
  #endif /* DEFAULT_LIBC */
-@@ -100,18 +106,23 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+@@ -100,18 +108,23 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
  #define MUSL_DYNAMIC_LINKER64 "/dev/null"
  #define MUSL_DYNAMIC_LINKERX32 "/dev/null"
  
