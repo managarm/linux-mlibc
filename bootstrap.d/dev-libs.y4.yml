@@ -1238,12 +1238,18 @@ packages:
 
   - name: openssl
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Robust, full-featured Open Source Toolkit for the Transport Layer Security (TLS)
+      description: The OpenSSL package contains management tools and libraries relating to cryptography. These are useful for providing cryptographic functions to other packages, such as OpenSSH, email applications, and web browsers (for accessing HTTPS sites).
+      spdx: 'Apache-2.0'
+      website: 'https://openssl-library.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
-      tag: 'OpenSSL_1_1_1w'
-      version: '1.1.1w'
+      tag: 'openssl-3.6.1'
+      version: '3.6.1'
     tools_required:
       - cross-toolchain
     pkgs_required:
@@ -1269,8 +1275,8 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'MANSUFFIX=ssl', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
-      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-3.6.1']
+      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-3.6.1']
 
   - name: pcre
     architecture: '@OPTION:arch@'

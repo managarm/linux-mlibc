@@ -1,0 +1,27 @@
+From 8bfe061ffb5cd12005bc5d4373133c2bd9d8e760 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 27 Jan 2026 21:30:49 +0100
+Subject: [PATCH] Add linux-mlibc-x86_64 support
+
+---
+ Configurations/10-main.conf | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Configurations/10-main.conf b/Configurations/10-main.conf
+index 7e93968..7a1ab61 100644
+--- a/Configurations/10-main.conf
++++ b/Configurations/10-main.conf
+@@ -893,6 +893,10 @@ my %targets = (
+         perlasm_scheme   => "elf",
+         multilib         => "64",
+     },
++    "linux-mlibc-x86_64" => {
++        inherit_from     => [ "linux-x86_64" ],
++        disable          => [ "afalgeng" ],
++    },
+     "linux-x86_64-clang" => {
+         inherit_from     => [ "linux-x86_64" ],
+         CC               => "clang",
+-- 
+2.51.0
+
