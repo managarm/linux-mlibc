@@ -904,12 +904,18 @@ packages:
 
   - name: libtasn
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: ASN.1 library
+      description: This package provides a highly portable C library that encodes and decodes DER/BER data following an ASN.1 schema.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gnu.org/software/libtasn1/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
-      tag: 'v4.19.0'
-      version: '4.19.0'
+      tag: 'v4.21.0'
+      version: '4.21.0'
       sources_required:
         - gnulib
       tools_required:
