@@ -1,0 +1,74 @@
+From 7974ef8cc8be626f6144edbd0dc1caab8e39b766 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 29 Jan 2026 22:16:05 +0100
+Subject: [PATCH 2/2] HACK: mlibc specific hacks
+
+These changes are considered hackarounds that need fixing in systemd to be upstreamable.
+or changes in mlibc which might break ABI or are complicated in other ways.
+---
+ src/basic/basic-forward.h           | 5 +++++
+ src/libsystemd-network/icmp6-util.c | 8 ++++++++
+ src/test/test-path-util.c           | 2 ++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/src/basic/basic-forward.h b/src/basic/basic-forward.h
+index c0dbb80..2cfe169 100644
+--- a/src/basic/basic-forward.h
++++ b/src/basic/basic-forward.h
+@@ -57,8 +57,13 @@ struct ucred;
+ 
+ /* To forward declare FILE and DIR, we have to declare the internal struct names for them. Since these are
+  * used for C++ symbol name mangling, they're effectively part of the ABI and won't actually change. */
++#ifndef __mlibc__
+ typedef struct _IO_FILE FILE;
+ typedef struct __dirstream DIR;
++#else
++#include <stdio.h>
++#include <dirent.h>
++#endif
+ 
+ /* 3rd-party library forward declarations */
+ 
+diff --git a/src/libsystemd-network/icmp6-util.c b/src/libsystemd-network/icmp6-util.c
+index 4347f8b..6b1fbd6 100644
+--- a/src/libsystemd-network/icmp6-util.c
++++ b/src/libsystemd-network/icmp6-util.c
+@@ -26,13 +26,21 @@ int icmp6_bind(int ifindex, bool is_router) {
+         if (is_router) {
+                 mreq = (struct ipv6_mreq) {
+                         .ipv6mr_multiaddr = IN6_ADDR_ALL_ROUTERS_MULTICAST,
++#ifndef __mlibc__
+                         .ipv6mr_ifindex = ifindex,
++#else
++                        .ipv6mr_interface = (int32_t)ifindex,
++#endif
+                 };
+                 ICMP6_FILTER_SETPASS(ND_ROUTER_SOLICIT, &filter);
+         } else {
+                 mreq = (struct ipv6_mreq) {
+                         .ipv6mr_multiaddr = IN6_ADDR_ALL_NODES_MULTICAST,
++#ifndef __mlibc__
+                         .ipv6mr_ifindex = ifindex,
++#else
++                        .ipv6mr_interface = (int32_t)ifindex,
++#endif
+                 };
+                 ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT, &filter);
+                 ICMP6_FILTER_SETPASS(ND_NEIGHBOR_ADVERT, &filter);
+diff --git a/src/test/test-path-util.c b/src/test/test-path-util.c
+index e1a43b8..be38588 100644
+--- a/src/test/test-path-util.c
++++ b/src/test/test-path-util.c
+@@ -1362,7 +1362,9 @@ TEST(print_MAX) {
+                  (size_t) FILENAME_MAX,
+                  (size_t) NAME_MAX);
+ 
++#ifndef __mlibc__
+         assert_cc(FILENAME_MAX == PATH_MAX);
++#endif
+ }
+ 
+ TEST(path_implies_directory) {
+-- 
+2.51.0
+
