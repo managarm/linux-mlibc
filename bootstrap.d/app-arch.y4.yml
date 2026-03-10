@@ -163,22 +163,28 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xz-utils
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Utilities for managing LZMA compressed files
+      description: This package provides the programs to compress and decompress lzma and xz compressed files.
+      spdx: 'no-spdx: Public Domain'
+      website: 'https://tukaani.org/xz/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: ports
-      git: 'https://git.tukaani.org/xz.git'
-      branch: 'v5.2'
-      version: '5.2'
+      git: 'https://github.com/tukaani-project/xz.git'
+      tag: 'v5.8.1'
+      version: '5.8.1'
       disable_shallow_fetch: true
       tools_required:
         - cross-autoconf-v2.69
         - cross-automake-v1.15
         - cross-libtool
       regenerate:
-        - args: ['./autogen.sh', '--no-po4a']
+        - args: ['./autogen.sh', '--no-po4a', '--no-doxygen']
     tools_required:
-      - cross-libtool
       - cross-toolchain
     pkgs_required:
       - mlibc
