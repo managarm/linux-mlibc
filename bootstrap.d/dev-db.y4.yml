@@ -1,17 +1,21 @@
 packages:
   - name: sqlite
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: SQL database engine
+      description: The sqlite package contains a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. 
+      spdx: 'no-spdx: public-domain'
+      website: 'https://sqlite.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-db']
     source:
       subdir: 'ports'
-      url: 'https://sqlite.org/2021/sqlite-autoconf-3370000.tar.gz'
+      url: 'https://sqlite.org/2025/sqlite-autoconf-3500400.tar.gz'
       format: 'tar.gz'
-      extract_path: 'sqlite-autoconf-3370000'
-      version: '3.37.0'
-      tools_required:
-        - cross-toolchain
-      regenerate:
-        - args: ['autoreconf', '-fvi']
+      checksum: blake2b:cb7b3509079a6b57dd7a0443e249b8fe6d1ff43b1bb318d07a1403a754ddbfa5d25f191405c062a5cdb872315aac78daa1e95d6687aab37e18889e21bc6d8c71
+      extract_path: 'sqlite-autoconf-3500400'
+      version: '3.50.4'
     tools_required:
       - cross-toolchain
     pkgs_required:
@@ -24,17 +28,13 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
+        - '--soname=legacy'
         - '--disable-static'
-        - '--enable-readline'
         - '--enable-fts5'
-        # - '--enable-debug'
-        # - 'CFLAGS=-g -O0 -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_FTS4=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_SECURE_DELETE=1 -DSQLITE_ENABLE_FTS3_TOKENIZER=1 -Wall -Wextra'
-        environ:
-          CPPFLAGS: '-g -O0 -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_FTS4=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_SECURE_DELETE=1 -DSQLITE_ENABLE_FTS3_TOKENIZER=1'
+        - '--enable-fts4'
+        - 'CPPFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_SECURE_DELETE=1'
     build:
       - args: ['make', '-j@PARALLELISM@']
-        # environ:
-          # CPPFLAGS: '-g -O0 -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_FTS4=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_SECURE_DELETE=1 -DSQLITE_ENABLE_FTS3_TOKENIZER=1'
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
