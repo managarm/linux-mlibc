@@ -1081,6 +1081,65 @@ packages:
       - name: libfdisk
         include: ['/usr/lib*/libfdisk*', '/usr/include/libfdisk/*', '/usr/lib*/pkgconfig/fdisk*']
 
+  - name: util-linux
+    architecture: '@OPTION:arch@'
+    from_source: util-linux
+    tools_required:
+      - cross-toolchain
+    pkgs_required:
+      - mlibc
+      - systemd
+      - util-linux-libs
+      - readline
+      - ncurses
+      - zlib
+      - libiconv
+      - file
+      - libxcrypt
+      - pcre2
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--default-library=shared'
+        - '-Dfs-search-path-extra=/usr/sbin:/bin:/usr/bin'
+        - '-Dbuild-python=disabled'
+        - '-Dbuild-bits=disabled'
+        - '-Dbuild-ldattach=disabled'
+        - '-Dbuild-unshare=disabled'
+        - '-Dbuild-nsenter=disabled'
+        - '-Dbuild-ipcrm=disabled'
+        - '-Dbuild-ipcs=disabled'
+        - '-Dbuild-lsfd=disabled'
+        - '-Dbuild-lsns=disabled'
+        - '-Dbuild-lscpu=disabled'
+        - '-Dbuild-agetty=disabled'
+        - '-Dbuild-pivot_root=disabled'
+        - '-Dbuild-chfn-chsh=disabled'
+        - '-Dbuild-login=disabled'
+        - '-Dbuild-nologin=disabled'
+        - '-Dbuild-sulogin=disabled'
+        - '-Dbuild-su=disabled'
+        - '-Dbuild-schedutils=disabled'
+        - '-Dprogram-tests=false'
+        - '-Dnls=disabled'
+        - '-Dbtrfs=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      # Remove items installed by util-linux-libs
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/include']
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
+
   - name: which
     architecture: '@OPTION:arch@'
     stability_level: 'broken'
