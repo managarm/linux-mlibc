@@ -1,0 +1,26 @@
+From 2fcc0f8f8d76e8f2a27843ee3218e593a046f265 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 10 Mar 2026 22:02:16 +0100
+Subject: [PATCH] Define _DEFAULT_SOURCE
+
+---
+ programs/util.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/programs/util.h b/programs/util.h
+index d768e76..eb8cab0 100644
+--- a/programs/util.h
++++ b/programs/util.h
+@@ -50,6 +50,9 @@
+ #  define UTIL_sleepMilli(milli) Sleep(milli)
+ 
+ #elif PLATFORM_POSIX_VERSION > 0 /* Unix-like operating system */
++#ifdef __mlibc__
++# define _DEFAULT_SOURCE
++#endif
+ #  include <unistd.h>   /* sleep */
+ #  define UTIL_sleep(s) sleep(s)
+ #  if ZSTD_NANOSLEEP_SUPPORT   /* necessarily defined in platform.h */
+-- 
+2.53.0
+
