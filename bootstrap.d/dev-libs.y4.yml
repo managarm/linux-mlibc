@@ -1326,19 +1326,18 @@ packages:
 
   - name: pcre2
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Perl-compatible regular expression library
       description: This package contains a new generation of the Perl Compatible Regular Expression libraries. These are useful for implementing regular expression pattern matching using the same syntax and semantics as Perl.
       spdx: 'BSD-3-Clause'
       website: 'https://www.pcre.org/'
-      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/PhilipHazel/pcre2.git'
-      tag: 'pcre2-10.39'
-      version: '10.39'
+      tag: 'pcre2-10.44'
+      version: '10.44'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -1358,7 +1357,7 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--docdir=/usr/share/doc/pcre2-10.39'
+        - '--docdir=/usr/share/doc/pcre2-10.44'
         - '--enable-unicode'
         - '--enable-jit'
         - '--enable-pcre2-16'
