@@ -528,12 +528,11 @@ packages:
 
   - name: libexpat
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_4_1'
-      version: '2.4.1'
+      tag: 'R_2_7_1'
+      version: '2.7.1'
       tools_required:
         - cross-toolchain
       regenerate:
