@@ -561,12 +561,11 @@ packages:
 
   - name: libffi
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       git: 'https://github.com/libffi/libffi.git'
-      tag: 'v3.4.2'
-      version: '3.4.2'
+      tag: 'v3.5.2'
+      version: '3.5.2'
       tools_required:
         - cross-toolchain
       regenerate:
