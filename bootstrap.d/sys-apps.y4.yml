@@ -370,7 +370,6 @@ packages:
   - name: grep
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: GNU regular expression matcher
       description: This package contains programs for searching through the contents of files.
@@ -386,8 +385,7 @@ packages:
       sources_required:
         - gnulib
       tools_required:
-        - cross-autoconf-v2.69
-        - cross-automake-v1.15
+        - cross-toolchain
       regenerate:
         - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
         - args: ['./bootstrap', '--skip-po']
@@ -396,8 +394,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - cross-toolchain
-      # - virtual: pkgconfig-for-target
-      #   triple: '@OPTION:arch-triple@'
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - pcre2
