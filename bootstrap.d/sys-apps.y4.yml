@@ -1166,7 +1166,6 @@ packages:
   - name: sed
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Super-useful stream editor
       description: This package contains a stream editor.
