@@ -1117,7 +1117,7 @@ packages:
         - '-Dbuild-lsfd=disabled'
         - '-Dbuild-lsns=disabled'
         - '-Dbuild-lscpu=disabled'
-        - '-Dbuild-agetty=disabled'
+        - '-Dbuild-agetty=enabled'
         - '-Dbuild-pivot_root=disabled'
         - '-Dbuild-chfn-chsh=disabled'
         - '-Dbuild-login=disabled'
