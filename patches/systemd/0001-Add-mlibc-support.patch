@@ -1,4 +1,4 @@
-From 95eabc5eaa1e20da8a515241706e61855a53ca5e Mon Sep 17 00:00:00 2001
+From 5d921f599831d776b6ae7b219270ee3cc9b6d4c6 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 29 Jan 2026 22:15:40 +0100
 Subject: [PATCH 1/2] Add mlibc support
@@ -469,5 +469,5 @@ index 0000000..6be5733
 +        return last;
 +}
 -- 
-2.51.0
+2.53.0
 

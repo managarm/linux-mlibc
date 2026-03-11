@@ -1,4 +1,4 @@
-From 7974ef8cc8be626f6144edbd0dc1caab8e39b766 Mon Sep 17 00:00:00 2001
+From aebe51e26015bbdf171908f43b840aa9edde09b8 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 29 Jan 2026 22:16:05 +0100
 Subject: [PATCH 2/2] HACK: mlibc specific hacks
@@ -8,8 +8,9 @@ or changes in mlibc which might break ABI or are complicated in other ways.
 ---
  src/basic/basic-forward.h           | 5 +++++
  src/libsystemd-network/icmp6-util.c | 8 ++++++++
+ src/shared/async.c                  | 5 ++++-
  src/test/test-path-util.c           | 2 ++
- 3 files changed, 15 insertions(+)
+ 4 files changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/src/basic/basic-forward.h b/src/basic/basic-forward.h
 index c0dbb80..2cfe169 100644
@@ -55,6 +56,29 @@ index 4347f8b..6b1fbd6 100644
                  };
                  ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT, &filter);
                  ICMP6_FILTER_SETPASS(ND_NEIGHBOR_ADVERT, &filter);
+diff --git a/src/shared/async.c b/src/shared/async.c
+index 0d5fbc1..b2f4f5c 100644
+--- a/src/shared/async.c
++++ b/src/shared/async.c
+@@ -87,6 +87,9 @@ static int close_func(void *p) {
+ }
+ 
+ int asynchronous_close(int fd) {
++#ifdef __mlibc__
++        safe_close(fd); /* local fallback */
++#else
+         unsigned v;
+         pid_t pid;
+         int r;
+@@ -130,7 +133,7 @@ int asynchronous_close(int fd) {
+                         if (waitpid(pid, NULL, __WCLONE) >= 0 || errno != EINTR)
+                                 break;
+         }
+-
++#endif
+         return -EBADF; /* return an invalidated fd */
+ }
+ 
 diff --git a/src/test/test-path-util.c b/src/test/test-path-util.c
 index e1a43b8..be38588 100644
 --- a/src/test/test-path-util.c
@@ -70,5 +94,5 @@ index e1a43b8..be38588 100644
  
  TEST(path_implies_directory) {
 -- 
-2.51.0
+2.53.0
 
