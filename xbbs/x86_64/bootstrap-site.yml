@@ -1,0 +1,20 @@
+define_options:
+    arch: x86_64
+    arch-triple: x86_64-linux-mlibc
+    rust-arch: x86_64
+
+labels:
+    ban:
+      - not-on-xbbs
+
+pkg_management:
+    format: xbps
+
+container:
+    runtime: cbuildrt
+    rootfs:  /var/lib/cbuildrt/managarm-buildenv
+    uid: 1000
+    gid: 1000
+    src_mount: /var/lib/managarm-buildenv/src
+    build_mount: /var/lib/managarm-buildenv/build
+    allow_containerless: true
