@@ -60,6 +60,8 @@ tasks:
       - image_create
     tools_required:
       - host-limine
+    pkgs_required:
+      - limine
     args: |
       if [ "@OPTION:arch@" == x86_64 ]; then
           biosboot=-b # Install the BIOS bootloader only on x86_64.
