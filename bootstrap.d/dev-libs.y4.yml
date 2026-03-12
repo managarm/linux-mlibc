@@ -35,8 +35,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_72_RTM'
-    version: 'NSS_3_72_RTM'
+    tag: 'NSS_3_121_RTM'
+    version: '3.121.RTM'
 
   - name: wayland
     subdir: 'ports'
