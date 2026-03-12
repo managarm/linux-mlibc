@@ -168,7 +168,13 @@ packages:
 
   - name: dbus
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: A message bus system, a simple way for applications to talk to each other
+      description: D-Bus is a message bus system, a simple way for applications to talk to one another. D-Bus supplies both a system daemon (for events such as "new hardware device added" or "printer queue changed") and a per-user-login-session daemon (for general IPC needs among user applications). Also, the message bus is built on top of a general one-to-one message passing framework, which can be used by any two applications to communicate directly (without going through the message bus daemon).
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.freedesktop.org/wiki/Software/dbus/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/dbus/dbus.git'
@@ -190,6 +196,7 @@ packages:
       - mlibc
       - glib
       - libexpat
+      - systemd
     revision: 1
     configure:
       - args:
@@ -198,14 +205,12 @@ packages:
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
-        #- '--enable-user-session'
+        - '--enable-user-session'
         - '--disable-doxygen-docs'
         - '--disable-xml-docs'
         - '--disable-static'
         - '--enable-shared'
         - '--enable-verbose-mode'
-        - '--with-systemdsystemunitdir=no'
-        - '--with-systemduserunitdir=no'
         - '--docdir=/usr/share/doc/dbus-1.12.20'
         - '--with-console-auth-dir=/run/console'
         - '--with-system-pid-file=/run/dbus/pid'
@@ -215,7 +220,7 @@ packages:
         - '--disable-libaudit'
         - '--disable-kqueue'
         - '--disable-launchd'
-        - '--disable-systemd'
+        - '--enable-systemd'
         - '--disable-tests'
     build:
       # Copy dbus-arch-deps.h into /usr/include/dbus-1.0/dbus?
