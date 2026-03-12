@@ -816,7 +816,6 @@ packages:
       - libintl
       - libmount
       - libxcrypt
-      # - shadow
       - openssl
       - util-linux-libs
       - mlibc
@@ -947,6 +946,9 @@ packages:
       - args: ['systemd-hwdb', '--usr', '-r', '@THIS_COLLECT_DIR@', 'update']
       - args: ['systemd-machine-id-setup', '--root=@SYSROOT_DIR@']
       - args: ['rm', '@THIS_COLLECT_DIR@/lib']
+      # Enable getty on tty1
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/systemd/system/getty.target.wants']
+      - args: ['ln', '-s', '/usr/lib/systemd/system/getty@tty1.service', '@THIS_COLLECT_DIR@/etc/systemd/system/getty.target.wants']
 
   - name: util-linux-libs
     architecture: '@OPTION:arch@'
