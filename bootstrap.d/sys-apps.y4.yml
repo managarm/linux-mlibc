@@ -685,24 +685,34 @@ packages:
 
   - name: shadow
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Utilities to deal with user accounts
+      description: The package contains programs for handling passwords in a secure way.
+      spdx: 'BSD-2-Clause BSD-3-Clause BSD-4-Clause 0BSD Unlicense GPL-2.0-or-later'
+      website: 'https://github.com/shadow-maint/shadow'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://github.com/shadow-maint/shadow.git'
-      tag: '4.14.0'
-      version: '4.14.0'
+      tag: '4.19.0'
+      version: '4.19.0'
       tools_required:
         - cross-toolchain
-        - host-gettext
+        - cross-gettext
       regenerate:
         - args: ['autoreconf', '-v', '-f', '--install']
     tools_required:
       - cross-toolchain
     pkgs_required:
       - mlibc
+      - acl
+      - attr
       - libiconv
       - libintl
       - libxcrypt
+      - pam
+      - systemd
     revision: 1
     configure:
       - args:
@@ -715,27 +725,41 @@ packages:
         - '--enable-shared'
         - '--disable-nls'
         - '--without-audit'
-        - '--without-libpam'
         - '--without-btrfs'
         - '--without-selinux'
-        - '--without-acl'
-        - '--without-attr'
         - '--without-skey'
         - '--without-tcb'
         - '--without-libcrack'
         - '--without-nscd'
         - '--without-sssd'
         - '--without-libbsd'
-        - '--with-group-name-max-length=32'
+        - '--with-bcrypt'
+        - '--with-yescrypt'
         - '--disable-man'
-        environ:
-          ac_cv_func_fsync: 'no'
-          ac_cv_header_sys_capability_h: 'no'
+        - '--disable-shadowgrp'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      # We don't set pamdir as we install our own pam config files
+      - args: ['make', 'pamddir=', 'exec_prefix=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/pam.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/login', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/chage', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/chfn', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/chgpasswd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/chpasswd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/chsh', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/groupadd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/groupdel', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/groupmems', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/groupmod', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/newusers', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/passwd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/su', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/useradd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/userdel', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam/usermod', '@THIS_COLLECT_DIR@/etc/pam.d/']
 
   - name: sysvinit
     architecture: '@OPTION:arch@'
