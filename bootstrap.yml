@@ -230,6 +230,8 @@ packages:
           install -dv -m 1777 @THIS_COLLECT_DIR@/tmp @THIS_COLLECT_DIR@/var/tmp
           install --directory --mode=0755 @THIS_COLLECT_DIR@/etc/profile.d
           cp @THIS_SOURCE_DIR@/{group,hosts,passwd,profile,bashrc,dircolors,shells,inputrc,hostname,resolv.conf} @THIS_COLLECT_DIR@/etc
+          cp @SOURCE_ROOT@/extrafiles/shadow @THIS_COLLECT_DIR@/etc/
+          chmod 0600 @THIS_COLLECT_DIR@/etc/shadow
           cp @THIS_SOURCE_DIR@/bash_completion.sh @THIS_COLLECT_DIR@/etc/profile.d
           cp @THIS_SOURCE_DIR@/dircolors.sh @THIS_COLLECT_DIR@/etc/profile.d
           cp @THIS_SOURCE_DIR@/extrapaths.sh @THIS_COLLECT_DIR@/etc/profile.d
@@ -253,6 +255,7 @@ packages:
           touch @THIS_COLLECT_DIR@/{tmp,var/tmp}/.keep
           ln -sfv /run @THIS_COLLECT_DIR@/var/run
           ln -sfv /run/lock @THIS_COLLECT_DIR@/var/lock
+          ln -sv /proc/self/mounts @THIS_COLLECT_DIR@/etc/mtab
 
   - name: kernel-headers
     architecture: '@OPTION:arch@'
