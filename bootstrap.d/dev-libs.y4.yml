@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.70.3'
-    version: '2.70.3'
+    tag: '2.82.4'
+    version: '2.82.4'
 
   - name: gnulib
     subdir: ports
@@ -354,7 +354,13 @@ packages:
 
   - name: glib
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The GLib library of C routines
+      description: This package contains low-level libraries useful for providing data structure handling for C, portability wrappers and interfaces for runtime functionality such as an event loop, threads, dynamic loading and an object system.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gtk.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     from_source: glib
     tools_required:
       - cross-toolchain
@@ -365,7 +371,7 @@ packages:
       - libffi
       - libiconv
       - libintl
-      - pcre
+      - pcre2
       - zlib
     revision: 1
     configure:
@@ -380,6 +386,7 @@ packages:
         - '-Dxattr=false'
         - '-Dtests=true'
         - '-Dinstalled_tests=true'
+        - '-Dintrospection=disabled'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
