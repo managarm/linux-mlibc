@@ -40,10 +40,7 @@ class Writer:
         subindent = " " * 4 * (self._level + 1)
 
         eir = {
-            "limine": "eir-limine",
-            "multiboot2": "eir-linux.bin",
             "linux": "vmlinuz-linux",
-            "efi": "eir-uefi",
         }[protocol]
 
         self.out.writelines(
@@ -54,8 +51,6 @@ class Writer:
                 f"{subindent}path: boot():///{eir}\n",
             ]
         )
-        # if protocol in {"limine", "multiboot2"}:
-        #     self.out.write(f"{subindent}module_path: boot():/managarm/initrd.cpio\n")
 
         cmdlines = []
         if self.base_cmdline:
@@ -78,18 +73,8 @@ def name_of_protocol(protocol):
 
 def make_default_entries(writer, *, protocol):
     writer.write_entry(
-        f"Weston (via {name_of_protocol(protocol)})",
+        f"agetty (via {name_of_protocol(protocol)})",
         protocol=protocol,
-    )
-    writer.write_entry(
-        f"kmscon (via {name_of_protocol(protocol)})",
-        protocol=protocol,
-        extra_cmdline="systemd.unit=kmscon.target",
-    )
-    writer.write_entry(
-        f"SDDM (via {name_of_protocol(protocol)})",
-        protocol=protocol,
-        extra_cmdline="systemd.unit=sddm.target",
     )
 
 
@@ -115,7 +100,7 @@ def main():
     with open(args.out, "w") as f:
         writer = Writer(f)
         if args.arch == "x86_64":
-            writer.base_cmdline = "root=/dev/vda3 rw init=/usr/sbin/init console=ttyS0"
+            writer.base_cmdline = "root=/dev/vda3 rw init=/usr/sbin/init"
         else:
             writer.base_cmdline = "serial"
 
@@ -135,27 +120,8 @@ def main():
             # we can default to chainloading.
             default_protocol = "efi"
 
-        with writer.submenu("+Managarm: default options"):
+        with writer.submenu("+linux-mlibc: default options"):
             make_default_entries(writer, protocol=default_protocol)
-
-        with writer.submenu("Managarm: extra options"):
-            make_extra_entries(writer, protocol=default_protocol)
-
-        if default_protocol != "efi":
-            with writer.submenu("Managarm: UEFI chainload"):
-                make_default_entries(writer, protocol="efi")
-
-        if limine_available and default_protocol != "limine":
-            with writer.submenu("Managarm: Limine protocol"):
-                make_default_entries(writer, protocol="limine")
-
-        if linux_available:
-            with writer.submenu("Managarm: Linux protocol"):
-                make_default_entries(writer, protocol="linux")
-
-        if mb2_available:
-            with writer.submenu("Managarm: Multiboot2 protocol"):
-                make_default_entries(writer, protocol="multiboot2")
 
 
 if __name__ == "__main__":
