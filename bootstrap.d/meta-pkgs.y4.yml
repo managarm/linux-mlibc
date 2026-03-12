@@ -23,6 +23,12 @@ packages:
       - libatomic
       - libquadmath
       - libssp
-    revision: 12
+      - kernel
+      - systemd
+      - util-linux
+      - shadow
+      - dbus
+      - limine
+    revision: 13
     configure: []
     build: []
