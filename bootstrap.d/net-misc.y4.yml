@@ -77,7 +77,6 @@ packages:
 
   - name: wget
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       url: 'https://ftpmirror.gnu.org/gnu/wget/wget-1.21.4.tar.gz'
