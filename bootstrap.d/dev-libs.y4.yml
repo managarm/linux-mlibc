@@ -1291,7 +1291,13 @@ packages:
 
   - name: pcre
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Perl-compatible regular expression library
+      description: This package contains the Perl Compatible Regular Expression libraries. These are useful for implementing regular expression pattern matching using the same syntax and semantics as Perl.
+      spdx: 'BSD'
+      website: 'http://www.pcre.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/vinix-os/pcre'
