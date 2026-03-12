@@ -2,38 +2,45 @@ packages:
   - name: p11-kit
     labels: [aarch64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: A standard configuration setup for installing PKCS#11
+      description: "This package provides a way to load and enumerate PKCS #11 (a Cryptographic Token Interface Standard) modules."
+      spdx: 'MIT'
+      website: 'https://p11-glue.github.io/p11-glue/p11-kit.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-crypt']
     source:
       subdir: ports
       git: 'https://github.com/p11-glue/p11-kit.git'
-      tag: '0.24.0'
-      version: '0.24.0'
-      tools_required:
-        - cross-toolchain
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            NOCONFIGURE: 'yes'
+      tag: '0.26.1'
+      version: '0.26.1'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - libffi
       - libtasn
+      - systemd
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
         - '--sysconfdir=/etc'
-        - '--with-trust-paths=/etc/pki/anchors'
-        - '--without-systemd'
-        - '--disable-doc-html'
-        - '--disable-nls'
+        - '-Dtrust_paths=/etc/pki/anchors'
+        - '-Dsystemd=enabled'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['ln', '-sfv', '/usr/libexec/p11-kit/trust-extract-compat', '@THIS_COLLECT_DIR@/usr/bin/update-ca-certificates']
