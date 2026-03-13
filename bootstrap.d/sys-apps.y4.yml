@@ -960,7 +960,6 @@ packages:
 
   - name: util-linux-libs
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     from_source: util-linux
     tools_required:
       - cross-toolchain
