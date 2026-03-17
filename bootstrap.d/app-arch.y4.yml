@@ -113,7 +113,6 @@ packages:
   - name: libarchive
     labels: [aarch64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Multi-format archive and compression library
       description: This package provides a common library to interface with the most used file compression standards.
@@ -124,20 +123,20 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.5.2'
-      version: '3.5.2'
+      tag: 'v3.8.6'
+      version: '3.8.6'
     tools_required:
       - cross-cmake
       - cross-toolchain
     pkgs_required:
       - mlibc
-      - openssl
-      - zlib
-      - xz-utils
-      - libiconv
-      - libexpat
-      - libxml
       - acl
+      - libexpat
+      - libiconv
+      - libxml
+      - openssl
+      - xz-utils
+      - zlib
       - zstd
     revision: 1
     configure:
