@@ -276,7 +276,7 @@ packages:
     from_source: linux
     tools_required:
       - tool: cross-gcc
-    revision: 1
+    revision: 2
     configure:
       - args: ['rsync', '-ar', '@THIS_SOURCE_DIR@/', '@THIS_BUILD_DIR@/']
       - args: ['make', 'mrproper']
