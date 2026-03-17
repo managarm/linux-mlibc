@@ -402,12 +402,11 @@ packages:
 
   - name: libxau
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxau.git'
-      tag: 'libXau-1.0.9'
-      version: '1.0.9'
+      tag: 'libXau-1.0.12'
+      version: '1.0.12'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
