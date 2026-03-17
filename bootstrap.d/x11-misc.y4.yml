@@ -2,8 +2,8 @@ sources:
   - name: 'xorg-util-macros'
     subdir: ports
     git: 'https://gitlab.freedesktop.org/xorg/util/macros.git'
-    tag: 'util-macros-1.19.3'
-    version: '1.19.3'
+    tag: 'util-macros-1.20.2'
+    version: '1.20.2'
     tools_required:
       - cross-toolchain
     regenerate:
