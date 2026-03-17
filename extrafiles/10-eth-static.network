@@ -1,0 +1,8 @@
+[Match]
+Name=ens7
+
+[Network]
+DHCP=ipv4
+
+[DHCPv4]
+UseDomains=true

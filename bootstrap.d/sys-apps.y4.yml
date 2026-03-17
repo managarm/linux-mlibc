@@ -823,7 +823,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -873,7 +873,7 @@ packages:
         - '-Dlz4=disabled'
         - '-Dmachined=false'
         - '-Dmicrohttpd=disabled'
-        - '-Dnetworkd=false'
+        - '-Dnetworkd=true'
         - '-Dnss-myhostname=false'
         - '-Dnss-resolve=disabled'
         - '-Dnss-systemd=false'
@@ -952,6 +952,11 @@ packages:
       # Enable getty on tty1
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/systemd/system/getty.target.wants']
       - args: ['ln', '-s', '/usr/lib/systemd/system/getty@tty1.service', '@THIS_COLLECT_DIR@/etc/systemd/system/getty.target.wants']
+      # This setup is temporary, NetworkManager will replace this
+      # Enable networkd
+      - args: ['systemctl', '--root=@THIS_COLLECT_DIR@', 'enable', 'systemd-networkd.service']
+      # Copy QEMU network setup config
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/10-eth-static.network', '@THIS_COLLECT_DIR@/etc/systemd/network/']
 
   - name: util-linux-libs
     architecture: '@OPTION:arch@'
