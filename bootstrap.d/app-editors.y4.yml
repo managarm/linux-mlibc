@@ -61,7 +61,6 @@ packages:
   - name: nano
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: GNU GPL'd Pico clone with more functionality
       description: This package provides a mall, simple text editor which aims to replace Pico, the default editor in the Pine package.
@@ -85,13 +84,13 @@ packages:
         - args: ['./autogen.sh']
     tools_required:
       - cross-toolchain
-      # - virtual: pkgconfig-for-target
-      #   triple: '@OPTION:arch-triple@'
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - file
-      - ncurses
       - libintl
+      - ncurses
       - zlib
     revision: 1
     configure:
@@ -101,7 +100,6 @@ packages:
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--docdir=/usr/share/doc/nano-8.5'
-        - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
