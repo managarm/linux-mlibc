@@ -1178,7 +1178,6 @@ packages:
 
   - name: which
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       url: 'https://ftpmirror.gnu.org/gnu/which/which-2.21.tar.gz'
