@@ -1051,39 +1051,42 @@ packages:
 
   - name: libxml
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: XML C parser and toolkit
+      description: This package contains libraries and utilities used for parsing XML files.
+      spdx: 'MIT'
+      website: 'https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
-      tag: 'v2.9.12'
-      version: '2.9.12'
-      tools_required:
-        - cross-toolchain
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'v2.15.2'
+      version: '2.15.2'
     tools_required:
       - cross-toolchain
-      - host-python
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
+      - icu
       - libiconv
-      - python
+      - readline
       - zlib
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-python=@SYSROOT_DIR@/usr/bin/python3.10'
-        - '--disable-static'
-        - '--with-threads'
-        - '--disable-ipv6'
+        - '-Dhistory=disabled' # readline is a thing but it can't find history?
+        - '-Dicu=enabled'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
