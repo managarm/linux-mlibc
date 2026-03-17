@@ -460,7 +460,8 @@ packages:
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 1
+      - libstdc++
+    revision: 2
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
