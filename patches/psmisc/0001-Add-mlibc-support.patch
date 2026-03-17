@@ -1,0 +1,38 @@
+From 1edc3ab46c250a57ce0d7a76115f655a30c0b5e9 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 17 Mar 2026 23:00:51 +0100
+Subject: [PATCH] Add mlibc support
+
+---
+ src/peekfd.c | 1 +
+ src/pstree.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/peekfd.c b/src/peekfd.c
+index 36dff04..a21ee4a 100644
+--- a/src/peekfd.c
++++ b/src/peekfd.c
+@@ -38,6 +38,7 @@
+ #include <stdint.h>
+ #include <errno.h>
+ #include <string.h>
++#include <signal.h>
+ 
+ #include "i18n.h"
+ 
+diff --git a/src/pstree.c b/src/pstree.c
+index 39265d1..2d54be0 100644
+--- a/src/pstree.c
++++ b/src/pstree.c
+@@ -62,7 +62,7 @@
+ typedef void* security_context_t; /* DUMMY to remove most ifdefs */
+ #endif /* !WITH_SELINUX && !WITH_APPARMOR  */
+ 
+-extern const char *__progname;
++extern char *__progname;
+ 
+ #define PROC_BASE    "/proc"
+ 
+-- 
+2.53.0
+

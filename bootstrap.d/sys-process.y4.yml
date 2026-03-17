@@ -39,12 +39,11 @@ packages:
 
   - name: psmisc
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.com/psmisc/psmisc.git'
-      tag: 'v23.4'
-      version: '23.4'
+      tag: 'v23.7'
+      version: '23.7'
       tools_required:
         - cross-toolchain
       regenerate:
