@@ -460,13 +460,19 @@ packages:
 
   - name: iana-etc
     architecture: 'noarch'
-    stability_level: 'broken'
+    metadata:
+      summary: Data files for network services and protocols
+      description: This package provides data for network services and protocols.
+      spdx: 'MIT'
+      website: 'https://www.iana.org/protocols'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-misc']
     source:
       subdir: ports
-      url: 'https://github.com/Mic92/iana-etc/releases/download/20230810/iana-etc-20230810.tar.gz'
-      extract_path: 'iana-etc-20230810'
+      url: 'https://github.com/Mic92/iana-etc/releases/download/20260306/iana-etc-20260306.tar.gz'
+      extract_path: 'iana-etc-20260306'
       format: 'tar.gz'
-      version: '20230810'
+      version: '20260306'
     revision: 1
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
