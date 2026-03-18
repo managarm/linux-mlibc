@@ -318,17 +318,13 @@ packages:
     architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:
-      - tool: cross-gcc
-        stage_dependencies: [compiler]
+      - bootstrap-system-gcc
       - tool: cross-binutils
     implict_package: true
     pkgs_required:
       - mlibc-headers
     revision: 1
     configure:
-      - args: |
-          curl -Lo libgcc-x86_64.a https://github.com/osdev0/libgcc-binaries/releases/download/2025-08-21/libgcc-x86_64.a
-          b2sum libgcc-x86_64.a | grep -q f41054803d2c8475ca394b37e4368aa7ae900bb73409f3d9566b4348797a16efadc97e28ed5db1432c30ba8c4b5ae8fb5ff42ec6d77c2f749765cac89bd66b56
       - args:
           - 'meson'
           - 'setup'
@@ -337,14 +333,11 @@ packages:
           - '--prefix=/usr'
           - '--libdir=lib'
           - '-Dno_headers=true'
-          - '-Dlibgcc_dependency=false'
           - '-Dbuildtype=debug'
           - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/include'
           - '-Dld_library_name=ld-linux-mlibc'
           - '-Duse_freestnd_hdrs=enabled'
           - '@THIS_SOURCE_DIR@'
-        environ:
-          LDFLAGS: '-Wl,@THIS_BUILD_DIR@/libgcc-x86_64.a'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
