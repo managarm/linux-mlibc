@@ -29,6 +29,11 @@ packages:
       - shadow
       - dbus
       - limine
-    revision: 13
+      - iana-etc
+      - psmisc
+      - procps-ng
+      - kmod
+      - nano
+    revision: 14
     configure: []
     build: []
