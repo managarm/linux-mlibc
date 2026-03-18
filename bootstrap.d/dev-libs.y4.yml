@@ -40,13 +40,13 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    git: 'https://github.com/wayland-project/wayland.git'
+    git: 'https://gitlab.freedesktop.org/wayland/wayland.git'
     tag: '1.21.0'
     version: '1.21.0'
 
   - name: wayland-old
     subdir: 'ports'
-    git: 'https://github.com/wayland-project/wayland.git'
+    git: 'https://gitlab.freedesktop.org/wayland/wayland.git'
     tag: '1.18.0'
     version: '1.18.0'
 
@@ -82,7 +82,7 @@ tools:
     architecture: 'noarch'
     source:
       subdir: 'ports'
-      git: 'https://github.com/wayland-project/wayland-protocols.git'
+      git: 'https://gitlab.freedesktop.org/wayland/wayland-protocols.git'
       tag: '1.27'
       version: '1.27'
     tools_required:
@@ -1430,7 +1430,7 @@ packages:
     stability_level: 'broken'
     source:
       subdir: 'ports'
-      git: 'https://github.com/wayland-project/wayland-protocols.git'
+      git: 'https://gitlab.freedesktop.org/wayland/wayland-protocols.git'
       tag: '1.27'
       version: '1.27'
     tools_required:
