@@ -382,7 +382,6 @@ packages:
 
   - name: gcc
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     from_source: gcc
     tools_required:
       - cross-toolchain
