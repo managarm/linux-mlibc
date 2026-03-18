@@ -2,8 +2,8 @@ sources:
   - name: libxtrans
     subdir: ports
     git: 'https://gitlab.freedesktop.org/xorg/lib/libxtrans.git'
-    tag: 'xtrans-1.4.0'
-    version: '1.4.0'
+    tag: 'xtrans-1.6.0'
+    version: '1.6.0'
     tools_required:
       - cross-toolchain
       - host-xorg-macros
