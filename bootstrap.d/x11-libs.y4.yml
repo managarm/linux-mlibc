@@ -360,14 +360,23 @@ packages:
 
   - name: libx11
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: X.Org X11 library
+      description: This package provides the core X11 library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/lib/libX11'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.7.2'
-      version: '1.7.2'
+      tag: 'libX11-1.8.12'
+      version: '1.8.12'
       tools_required:
-        - cross-toolchain
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
+        - cross-libtool
+        - cross-pkg-config
         - host-xorg-macros
         - host-xtrans
       regenerate:
