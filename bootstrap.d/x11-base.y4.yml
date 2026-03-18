@@ -1,22 +1,32 @@
 packages:
   - name: xcb-proto
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: X C-language Bindings protocol headers
+      description: The xcb-proto package provides the XML-XCB protocol descriptions that libxcb uses to generate the majority of its code and API.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-base']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
-      tag: 'xcb-proto-1.15.2'
-      version: '1.15.2'
+      tag: 'xcb-proto-1.17.0'
+      version: '1.17.0'
       tools_required:
-        - cross-toolchain
+        - cross-autoconf-v2.69
+        - cross-automake-v1.16
+        - cross-libtool
+        - cross-pkg-config
         - host-xorg-macros
       regenerate:
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
-      - cross-toolchain
       - host-python
+      - cross-toolchain
     pkgs_required:
       - mlibc
       - libxau
@@ -33,7 +43,7 @@ packages:
         - '--localstatedir=/var'
         - '--disable-static'
         environ:
-          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.10'
+          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.14'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
