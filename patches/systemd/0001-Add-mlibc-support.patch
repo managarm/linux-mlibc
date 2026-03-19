@@ -1,4 +1,4 @@
-From 5d921f599831d776b6ae7b219270ee3cc9b6d4c6 Mon Sep 17 00:00:00 2001
+From 0b570d82dc612054071b2a77d6ea1d89dd852378 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 29 Jan 2026 22:15:40 +0100
 Subject: [PATCH 1/2] Add mlibc support
@@ -14,7 +14,8 @@ Subject: [PATCH 1/2] Add mlibc support
  src/libc/meson.build                 |   1 +
  src/libc/mlibc/meson.build           |   9 +
  src/libc/mlibc/printf.c              | 263 +++++++++++++++++++++++++++
- 10 files changed, 359 insertions(+), 3 deletions(-)
+ src/network/networkd-ndisc.c         |   1 +
+ 11 files changed, 360 insertions(+), 3 deletions(-)
  create mode 100644 src/include/mlibc/gnu/libc-version.h
  create mode 100644 src/include/mlibc/malloc.h
  create mode 100644 src/include/mlibc/printf.h
@@ -468,6 +469,18 @@ index 0000000..6be5733
 +
 +        return last;
 +}
+diff --git a/src/network/networkd-ndisc.c b/src/network/networkd-ndisc.c
+index 93965f5..eba3787 100644
+--- a/src/network/networkd-ndisc.c
++++ b/src/network/networkd-ndisc.c
+@@ -4,6 +4,7 @@
+ ***/
+ 
+ #include <linux/if_arp.h>
++#include <linux/in6.h>
+ #include <linux/rtnetlink.h>
+ #include <netinet/icmp6.h>
+ 
 -- 
 2.53.0
 
