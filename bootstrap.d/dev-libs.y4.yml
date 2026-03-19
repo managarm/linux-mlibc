@@ -125,6 +125,7 @@ tools:
 
   - name: host-gobject-introspection
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     exports_aclocal: true
     from_source: gobject-introspection
     tools_required:
