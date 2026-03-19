@@ -1170,7 +1170,6 @@ packages:
   - name: libxtrans
     from_source: libxtrans
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     tools_required:
       - cross-toolchain
     pkgs_required:
