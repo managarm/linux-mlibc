@@ -116,6 +116,7 @@ tools:
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     compile:
       - args: ['ninja']
     install:
