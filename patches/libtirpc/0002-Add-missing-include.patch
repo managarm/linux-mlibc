@@ -1,0 +1,24 @@
+From 0ac287f8acd503619c69de73165e9787ac6ac9db Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 19 Mar 2026 20:48:34 +0100
+Subject: [PATCH 2/2] Add missing include
+
+---
+ src/svc_raw.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/svc_raw.c b/src/svc_raw.c
+index a8a396f..363c610 100644
+--- a/src/svc_raw.c
++++ b/src/svc_raw.c
+@@ -41,6 +41,7 @@
+ #include <reentrant.h>
+ #include <rpc/rpc.h>
+ #include <sys/types.h>
++#include <string.h>
+ #include <rpc/raw.h>
+ #include <stdlib.h>
+ 
+-- 
+2.53.0
+

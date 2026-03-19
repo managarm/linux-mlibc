@@ -1,7 +1,7 @@
-From 757a38164a4a2408b7bb06e255769d2039e12460 Mon Sep 17 00:00:00 2001
+From 6384379e2512065c48164195b81bb13efb8beb4e Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sat, 25 Jun 2022 02:11:09 +0200
-Subject: [PATCH] Fix wrong function prototype
+Subject: [PATCH 1/2] Fix wrong function prototype
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -22,5 +22,5 @@ index 5f8ea72..8d649f6 100644
  extern AUTH *authnone_create(void);		/* takes no parameters */
  #ifdef __cplusplus
 -- 
-2.36.1
+2.53.0
 

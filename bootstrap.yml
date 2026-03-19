@@ -344,6 +344,31 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+general:
+    patch_author: The Managarm Project - Linux mlibc Team
+    patch_email: info@managarm.org
+    everything_by_default: false
+    # mandate_hashes_for_archives: true
+    enable_network_isolation: true
+    # cargo:
+    #     config_toml: 'extrafiles/config.toml'
+
+# NOTE: There are two special build IDs:
+# - "latest" refers to the newest build on xbbs, whether or not it succeeded
+# - "success" referes to the newest build on xbbs *that did succeed*
+# We're using "success" as that guarantees that the build from which we pull
+# packages can boot, since all build attempts have a test-image step that must
+# run.
+repositories:
+    tool_archives:
+        x86_64: 'https://builds.managarm.org/projects/linux_mlibc/success/repo/tools/x86_64/'
+        # aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/tools/aarch64/'
+        # riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/tools/riscv64/'
+    xbps:
+        x86_64: 'https://builds.managarm.org/projects/linux_mlibc/success/repo/packages/x86_64/'
+        # aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/packages/aarch64/'
+        # riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/packages/riscv64/'
+
 # TODO: We currently don't support computed options or anything of that sort,
 #       so we just define the architecture, and the triple as 2 options
 #       (some packages, like llvm and libjpeg-turbo need the architecture)

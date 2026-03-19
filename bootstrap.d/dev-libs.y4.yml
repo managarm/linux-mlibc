@@ -106,6 +106,7 @@ tools:
 
   - name: host-glib
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     exports_aclocal: true
     from_source: glib
     revision: 1
@@ -389,6 +390,7 @@ packages:
         - '-Dinstalled_tests=true'
         - '-Dintrospection=disabled'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
