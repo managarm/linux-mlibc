@@ -52,7 +52,6 @@ packages:
 
   - name: xorg-proto
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
