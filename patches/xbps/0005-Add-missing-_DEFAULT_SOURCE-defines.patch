@@ -1,0 +1,94 @@
+From a715fdfab45521d06559f5219e920173be57865d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 20 Mar 2026 11:30:42 +0100
+Subject: [PATCH 5/5] Add missing _DEFAULT_SOURCE defines
+
+---
+ bin/xbps-checkvers/main.c | 2 ++
+ bin/xbps-create/main.c    | 2 ++
+ lib/fetch/common.c        | 2 ++
+ lib/package_script.c      | 2 ++
+ lib/pkgdb.c               | 2 ++
+ lib/repo.c                | 1 +
+ 6 files changed, 11 insertions(+)
+
+diff --git a/bin/xbps-checkvers/main.c b/bin/xbps-checkvers/main.c
+index c4f8d18..e703e95 100644
+--- a/bin/xbps-checkvers/main.c
++++ b/bin/xbps-checkvers/main.c
+@@ -26,6 +26,8 @@
+  *
+  */
+ 
++#define _DEFAULT_SOURCE
++
+ #include <getopt.h>
+ #include <stdbool.h>
+ #include <stdio.h>
+diff --git a/bin/xbps-create/main.c b/bin/xbps-create/main.c
+index 1f594ad..b69132b 100644
+--- a/bin/xbps-create/main.c
++++ b/bin/xbps-create/main.c
+@@ -22,6 +22,8 @@
+  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
++#define _DEFAULT_SOURCE
++
+ #include <sys/types.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+diff --git a/lib/fetch/common.c b/lib/fetch/common.c
+index 86306cf..9189317 100644
+--- a/lib/fetch/common.c
++++ b/lib/fetch/common.c
+@@ -31,6 +31,8 @@
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#define _DEFAULT_SOURCE
++
+ #include "compat.h"
+ 
+ #include <sys/types.h>
+diff --git a/lib/package_script.c b/lib/package_script.c
+index 73837b0..fc88aaa 100644
+--- a/lib/package_script.c
++++ b/lib/package_script.c
+@@ -23,6 +23,8 @@
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#define _DEFAULT_SOURCE
++
+ #include <stdio.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+diff --git a/lib/pkgdb.c b/lib/pkgdb.c
+index 1721a02..b331b3c 100644
+--- a/lib/pkgdb.c
++++ b/lib/pkgdb.c
+@@ -23,6 +23,8 @@
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#define _DEFAULT_SOURCE
++
+ #include <stdio.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+diff --git a/lib/repo.c b/lib/repo.c
+index f3f6ed4..d7dd50a 100644
+--- a/lib/repo.c
++++ b/lib/repo.c
+@@ -22,6 +22,7 @@
+  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
++#define _DEFAULT_SOURCE
+ 
+ #include <stdio.h>
+ #include <stdbool.h>
+-- 
+2.53.0
+

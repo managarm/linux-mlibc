@@ -1,0 +1,39 @@
+From d80e1aa280f1467d4e17ca86857b598c4b6897fb Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 1 Dec 2025 00:44:22 +0100
+Subject: [PATCH 4/5] Define _XOPEN_SOURCE=700 and _GNU_SOURCE for mlibc
+
+---
+ lib/fetch/ftp.c  | 2 +-
+ lib/fetch/http.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/fetch/ftp.c b/lib/fetch/ftp.c
+index 0fac406..72f130b 100644
+--- a/lib/fetch/ftp.c
++++ b/lib/fetch/ftp.c
+@@ -57,7 +57,7 @@
+  *
+  */
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__mlibc__)
+ /* Keep this down to Linux, it can create surprises else where. */
+ #define _GNU_SOURCE
+ #endif
+diff --git a/lib/fetch/http.c b/lib/fetch/http.c
+index b068464..706f5dd 100644
+--- a/lib/fetch/http.c
++++ b/lib/fetch/http.c
+@@ -62,7 +62,7 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__mlibc__)
+ #define _GNU_SOURCE
+ #endif
+ 
+-- 
+2.53.0
+
