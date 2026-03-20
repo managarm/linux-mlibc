@@ -691,15 +691,25 @@ packages:
 
   - name: libpng
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Portable Network Graphics library
+      description: This package contains libraries used by other programs for reading and writing PNG files. The PNG format was designed as a replacement for GIF and, to a lesser extent, TIFF, with many improvements and extensions and lack of patent problems.
+      spdx: 'no-spdx: libpng'
+      website: 'http://www.libpng.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
-      subdir: ports
-      git: https://github.com/glennrp/libpng
-      tag: 'v1.6.37'
-      version: '1.6.37'
+      subdir: 'ports'
+      url: 'https://downloads.sourceforge.net/libpng/libpng-1.6.55.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'libpng-1.6.55'
+      checksum: blake2b:2fd88e6e9f4e72edbafbfdd6d8e78522033920a250f8cb37f29ba8e9593cdf006b06f4e73de4e83fc5ddaaa3725362f27f5a16727ae841fd8969b74f28517ec4
+      version: '1.6.55'
+      patch-path-strip: 1
       tools_required:
         - cross-toolchain
       regenerate:
+        - args: ['git', 'clean', '-xf', '-e', '*.xbstrap']
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain
@@ -712,9 +722,12 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libtheora
     architecture: '@OPTION:arch@'
