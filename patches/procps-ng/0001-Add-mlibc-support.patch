@@ -1,0 +1,25 @@
+From 12ec5eb14e384342c07f02cdb624bb3fe952c0af Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 20 Mar 2026 00:59:34 +0100
+Subject: [PATCH] Add mlibc support
+
+---
+ src/w.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/w.c b/src/w.c
+index 7e10532..2b84015 100644
+--- a/src/w.c
++++ b/src/w.c
+@@ -80,7 +80,7 @@ typedef struct utmpx utmp_t;
+ typedef struct utmp utmp_t;
+ #endif
+ 
+-#ifdef __GLIBC__
++#if defined(__GLIBC__) || defined(__mlibc__)
+ #if !defined(UT_HOSTSIZE) || defined(__UT_HOSTSIZE)
+ #	define UT_HOSTSIZE __UT_HOSTSIZE
+ #	define UT_LINESIZE __UT_LINESIZE
+-- 
+2.53.0
+
