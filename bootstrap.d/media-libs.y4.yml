@@ -885,16 +885,13 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: mesa
-    # labels: [aarch64]
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-21.3.5'
-      version: '21.3.5'
-      # tools_required:
-      #   - host-pkg-config
+      tag: 'mesa-26.0.3'
+      version: '26.0.3'
     tools_required:
       - cross-toolchain
       - wayland-scanner
@@ -918,6 +915,7 @@ packages:
       - wayland
       - wayland-protocols
       - zlib
+      - zstd
     revision: 1
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
@@ -939,15 +937,18 @@ packages:
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
         - '-Dglx=dri'
-        - '-Dplatforms=wayland,x11'
-        # The Gallium swrast driver seems to be preferred over dri-swrast.
-        - '-Ddri-drivers='
-        - '-Dgallium-drivers=swrast,virgl'
+        - '-Dgallium-drivers=llvmpipe,virgl'
         - '-Dvulkan-drivers='
-        - '-Dglvnd=true'
-        # - '-Dglvnd=false'
+        - '-Dglvnd=enabled'
         # Force Mesa to build with LLVM.
         - '-Dllvm=enabled'
+        - '-Dgallium-va=disabled'
+        - '-Dshared-glapi=enabled'
+        - '-Degl=enabled'
+        - '-Dgbm=enabled'
+        - '-Dgles1=enabled'
+        - '-Dgles2=enabled'
+        - '-Dzstd=enabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
