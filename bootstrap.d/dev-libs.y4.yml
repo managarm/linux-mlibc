@@ -513,12 +513,18 @@ packages:
 
   - name: libevdev
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Handler library for evdev events
+      description: This package contains common functions for Xorg input drivers.
+      spdx: 'MIT'
+      website: 'https://www.freedesktop.org/wiki/Software/libevdev/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.12.0'
-      version: '1.12.0'
+      tag: 'libevdev-1.13.6'
+      version: '1.13.6'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -527,6 +533,7 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - cross-toolchain
+      - host-python
     pkgs_required:
       - mlibc
     revision: 1
