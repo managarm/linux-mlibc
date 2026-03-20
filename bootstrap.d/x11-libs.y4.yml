@@ -590,12 +590,11 @@ packages:
 
   - name: libxdamage
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdamage.git'
-      tag: 'libXdamage-1.1.5'
-      version: '1.1.5'
+      tag: 'libXdamage-1.1.7'
+      version: '1.1.7'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
