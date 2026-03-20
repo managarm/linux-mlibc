@@ -40,10 +40,13 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
-      tag: '2.13.92'
-      version: '2.13.92'
+      tag: '2.17.1'
+      version: '2.17.1'
       tools_required:
-        - cross-toolchain
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
+        - cross-libtool
+        - cross-pkg-config
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -70,11 +73,13 @@ packages:
         - '--disable-docs'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--enable-libxml2'
+        - '--docdir=/usr/share/doc/fontconfig-2.17.1'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: freeglut
     architecture: '@OPTION:arch@'
