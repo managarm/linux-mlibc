@@ -30,7 +30,6 @@ tools:
 packages:
   - name: dejavu
     architecture: 'noarch'
-    stability_level: 'broken'
     metadata:
       summary: Dejavu fonts
       description: This package provides the Dejavu fonts, commonly found on Linux systems.
@@ -42,6 +41,7 @@ packages:
       subdir: ports
       url: 'https://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2'
       format: 'tar.bz2'
+      checksum: blake2b:d8614907887f20967fc7c75cb33b636a0eb5c682a076ccc7aef09f4ac243507afc005ef90d0b2aeee6a4a6a1ff3d5ce4fac0d1722a382525b3883ef53cdec26a
       extract_path: 'dejavu-fonts-ttf-2.37'
       version: '2.37'
     pkgs_required:
@@ -55,11 +55,10 @@ packages:
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
       - args: ['cp', '-r', '@THIS_BUILD_DIR@/dejavu/dejavu', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
-    # xbps broke?
-    # scripts:
-    #     post_install:
-    #       - args: 'echo "Running fc-cache; this may take a few seconds..."'
-    #       - args: ['fc-cache']
+    scripts:
+        post_install:
+          - args: 'echo "Running fc-cache; this may take a few seconds..."'
+          - args: ['fc-cache']
 
   - name: xorg-font-util
     architecture: '@OPTION:arch@'
