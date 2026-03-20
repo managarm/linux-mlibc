@@ -580,12 +580,18 @@ packages:
 
   - name: libglvnd
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The GL Vendor-Neutral Dispatch library
+      description: This package contains the GL Vendor-Neutral Dispatch library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/glvnd/libglvnd'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
-      tag: 'v1.4.0'
-      version: '1.4.0'
+      tag: 'v1.7.0'
+      version: '1.7.0'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
