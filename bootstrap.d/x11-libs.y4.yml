@@ -837,12 +837,11 @@ packages:
 
   - name: libxi
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
-      tag: 'libXi-1.8'
-      version: '1.8'
+      tag: 'libXi-1.8.2'
+      version: '1.8.2'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
