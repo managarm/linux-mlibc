@@ -477,12 +477,18 @@ packages:
 
   - name: harfbuzz
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: An OpenType text shaping engine
+      description: This package contains an OpenType text shaping engine.
+      spdx: 'ISC'
+      website: 'https://harfbuzz.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '3.1.2'
-      version: '3.1.2'
+      tag: '13.2.1'
+      version: '13.2.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -491,9 +497,10 @@ packages:
       - mlibc
       - cairo
       - freetype
-      - glib
       - graphite2
+      - glib
       - icu
+      - libgcc
       - zlib
     revision: 1
     configure:
@@ -509,7 +516,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dgraphite2=enabled'
         - '-Dglib=enabled'
-        - '-Dgobject=disabled'
+        - '-Dgobject=enabled'
         - '-Dicu=enabled'
         - '-Dfreetype=enabled'
         - '-Dcairo=enabled'
