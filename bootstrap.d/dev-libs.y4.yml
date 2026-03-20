@@ -808,36 +808,42 @@ packages:
 
   - name: libinput
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Library to handle input devices in Wayland
+      description: This package contains a library that handles input devices for display servers and other applications that need to directly deal with input devices.
+      spdx: 'MIT'
+      website: 'https://www.freedesktop.org/wiki/Software/libinput/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/wayland-project/libinput.git'
-      tag: '1.21.0'
-      version: '1.21.0'
+      git: 'https://gitlab.freedesktop.org/libinput/libinput.git'
+      tag: '1.31.0'
+      version: '1.31.0'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - eudev
       - libevdev
       - mtdev
+      - systemd
     revision: 1
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '--libdir=lib'
-          - '--buildtype=debugoptimized'
-          - '-Dlibwacom=false'
-          - '-Ddebug-gui=false'
-          - '-Dtests=false'
-          - '-Ddocumentation=false'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dlibwacom=false'
+        - '-Ddebug-gui=false'
+        - '-Dtests=false'
+        - '-Ddocumentation=false'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
