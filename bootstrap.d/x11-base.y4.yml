@@ -101,7 +101,6 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - eudev
       - libdrm
       - libepoxy
       - libx11
@@ -118,6 +117,7 @@ packages:
       - libxxf86vm
       - nettle
       - pixman
+      - systemd
       - xkbcomp
       - xcb-proto
       - xorg-proto
