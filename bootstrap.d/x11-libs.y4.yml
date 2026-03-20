@@ -666,14 +666,17 @@ packages:
 
   - name: libxext
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxext.git'
-      tag: 'libXext-1.3.4'
-      version: '1.3.4'
+      tag: 'libXext-1.3.7'
+      version: '1.3.7'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-libtool
+        - cross-pkg-config
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
