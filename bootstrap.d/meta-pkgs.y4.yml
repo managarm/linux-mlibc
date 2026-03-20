@@ -34,6 +34,7 @@ packages:
       - procps-ng
       - kmod
       - nano
-    revision: 14
+      - ca-certificates
+    revision: 15
     configure: []
     build: []
