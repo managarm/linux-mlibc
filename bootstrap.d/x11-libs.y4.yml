@@ -1056,12 +1056,11 @@ packages:
 
   - name: libxrender
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrender.git'
-      tag: 'libXrender-0.9.10'
-      version: '0.9.10'
+      tag: 'libXrender-0.9.12'
+      version: '0.9.12'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
