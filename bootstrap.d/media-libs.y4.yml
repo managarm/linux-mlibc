@@ -574,12 +574,18 @@ packages:
 
   - name: libepoxy
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Library for handling OpenGL function pointer management
+      description: libdisplay-info is a library for handling OpenGL function pointer management.
+      spdx: 'MIT'
+      website: 'https://github.com/anholt/libepoxy'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
-      tag: '1.5.9'
-      version: '1.5.9'
+      tag: '1.5.10'
+      version: '1.5.10'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
