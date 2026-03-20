@@ -1133,7 +1133,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1162,6 +1162,7 @@ packages:
         - '-Dbuild-nologin=disabled'
         - '-Dbuild-sulogin=disabled'
         - '-Dbuild-su=disabled'
+        - '-Dbuild-newgrp=disabled'
         - '-Dbuild-schedutils=disabled'
         - '-Dprogram-tests=false'
         - '-Dnls=disabled'
