@@ -83,12 +83,18 @@ packages:
 
   - name: freeglut
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: A free OpenGL utility toolkit, the open-sourced alternative to the GLUT library
+      description: Freeglut is intended to be a 100% compatible, completely opensourced clone of the GLUT library. GLUT is a window system independent toolkit for writing OpenGL programs, implementing a simple windowing API, which makes learning about and exploring OpenGL programming very easy.
+      spdx: 'MIT'
+      website: 'https://freeglut.sourceforge.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/FreeGLUTProject/freeglut.git'
-      tag: 'v3.2.2'
-      version: '3.2.2'
+      tag: 'v3.8.0'
+      version: '3.8.0'
     tools_required:
       - cross-cmake
       - cross-toolchain
@@ -107,6 +113,7 @@ packages:
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DFREEGLUT_BUILD_DEMOS=OFF'
         - '-DFREEGLUT_BUILD_STATIC_LIBS=OFF'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5' # CMake 4.0.0 removed compat with CMake < 3.5
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
