@@ -40,9 +40,13 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    git: 'https://gitlab.freedesktop.org/wayland/wayland.git'
-    tag: '1.21.0'
-    version: '1.21.0'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.25.0/downloads/wayland-1.25.0.tar.xz'
+    checksum: 'blake2b:d763149c9b06b431435e5b81aac32214774a1667bc85386befc2a2fef795c9c2df44e3e1fc9743c79fa5a491e44ea47f067ca92c9f3e31f57a6b999cbe781bf4'
+    extract_path: 'wayland-1.25.0'
+    patch-path-strip: 1
+    format: 'tar.xz'
+    tag: '1.25.0'
+    version: '1.25.0'
 
   - name: wayland-old
     subdir: 'ports'
@@ -1393,7 +1397,13 @@ packages:
 
   - name: wayland
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Wayland protocol libraries
+      description: Wayland is a project to define a protocol for a compositor to talk to its clients as well as a library implementation of the protocol.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     from_source: wayland
     tools_required:
       - cross-toolchain
@@ -1420,6 +1430,7 @@ packages:
         - '-Ddtd_validation=false'
         - '-Ddocumentation=false'
         - '-Dscanner=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
