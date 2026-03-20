@@ -1326,33 +1326,40 @@ packages:
 
   - name: pixman
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Low-level pixel manipulation routines
+      description: This package contains a library that provides low-level pixel manipulation features such as image compositing and trapezoid rasterization.
+      spdx: 'MIT'
+      website: 'http://www.pixman.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/pixman/pixman.git'
-      tag: 'pixman-0.40.0'
-      version: '0.40.0'
-      tools_required:
-        - cross-toolchain
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'pixman-0.46.4'
+      version: '0.46.4'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - glib
       - libpng
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--buildtype=release'
+        - '--wrap-mode=nofallback'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
