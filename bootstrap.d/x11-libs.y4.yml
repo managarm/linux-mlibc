@@ -1014,12 +1014,11 @@ packages:
   - name: libxrandr
     labels: [aarch64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrandr.git'
-      tag: 'libXrandr-1.5.2'
-      version: '1.5.2'
+      tag: 'libXrandr-1.5.5'
+      version: '1.5.5'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
