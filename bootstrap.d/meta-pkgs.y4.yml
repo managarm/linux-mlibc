@@ -35,6 +35,7 @@ packages:
       - kmod
       - nano
       - ca-certificates
-    revision: 15
+      - xbps
+    revision: 16
     configure: []
     build: []
