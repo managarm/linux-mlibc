@@ -1442,14 +1442,24 @@ packages:
 
   - name: wayland-protocols
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Wayland protocol files
+      description: This package contains additional Wayland protocols that add functionality outside of protocols already in the Wayland core.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/wayland/wayland-protocols.git'
-      tag: '1.27'
-      version: '1.27'
+      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.47/downloads/wayland-protocols-1.47.tar.xz'
+      checksum: 'blake2b:2b6fcd847016ccd0a8fb5e47a6429274a34ce414948f02da0d56d51855dc732c56c8266be38388deacb6af6491146da0049f6e003cec823a1d362bd2f429e678'
+      extract_path: 'wayland-protocols-1.47'
+      format: 'tar.xz'
+      version: '1.47'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
       - wayland-scanner
     pkgs_required:
       - mlibc
@@ -1464,6 +1474,8 @@ packages:
         - '--buildtype=release'
         - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/tools/wayland-scanner/lib/x86_64-linux-gnu/pkgconfig:@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
