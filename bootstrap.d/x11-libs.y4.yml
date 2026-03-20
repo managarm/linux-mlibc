@@ -1094,12 +1094,11 @@ packages:
 
   - name: libxshmfence
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxshmfence.git'
-      tag: 'libxshmfence-1.3'
-      version: '1.3'
+      tag: 'libxshmfence-1.3.3'
+      version: '1.3.3'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
