@@ -709,12 +709,11 @@ packages:
 
   - name: libxfixes
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfixes.git'
-      tag: 'libXfixes-6.0.0'
-      version: '6.0.0'
+      tag: 'libXfixes-6.0.2'
+      version: '6.0.2'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
