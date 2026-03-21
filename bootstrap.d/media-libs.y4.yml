@@ -36,7 +36,6 @@ packages:
 
   - name: fontconfig
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
