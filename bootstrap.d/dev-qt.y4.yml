@@ -173,7 +173,6 @@ packages:
 
   - name: qtdeclarative6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 declarative library
       description: This package provides the Qt6 declarative library, containing support for QML and QtQuick.
@@ -184,8 +183,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
