@@ -1,18 +1,25 @@
 packages:
   - name: seatd
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: A minimal seat management daemon, and a universal seat management library.
+      description: Seat management takes care of mediating access to shared devices (graphics, input), without requiring the applications needing access to be root.
+      spdx: MIT
+      website: https://sr.ht/~kennylevinsen/seatd/
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-auth']
     source:
       subdir: 'ports'
       git: 'https://git.sr.ht/~kennylevinsen/seatd/'
-      tag: '0.7.0'
-      version: '0.7.0'
+      tag: '0.9.3'
+      version: '0.9.3'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - systemd
     revision: 1
     configure:
       - args:
@@ -22,7 +29,7 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
-        - '-Dlibseat-logind=disabled'
+        - '-Dlibseat-logind=systemd'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -31,3 +38,5 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['install', '-Dm644', '@THIS_SOURCE_DIR@/contrib/systemd/seatd.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/seatd.service']
+      - args: ['systemctl', '--root=@THIS_COLLECT_DIR@', 'enable', 'seatd.service']
