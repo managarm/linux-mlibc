@@ -427,7 +427,6 @@ packages:
 
   - name: gstreamer
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Open source multimedia framework
       description: This package contains a streaming media framework that enables applications to share a common set of plugins for tasks such as video encoding and decoding, audio encoding and decoding, audio and video filters, audio visualisation, web streaming and anything else that streams in real-time or otherwise. This package only provides base functionality and libraries of the GStreamer stack.
@@ -437,9 +436,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gstreamer.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.28.1.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gstreamer-1.28.1'
+      checksum: blake2b:856a7556ef18e10698750db3223fe03d6d692bd4aa2e5d4675c647d46f80f21d4817d764df07b1a3408fbf7e8bda71cbeb1d0470f47caf23f0d41d6ff72c3125
+      version: '1.28.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -457,16 +458,18 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '-Dtools=enabled'
+        - '-Dlibexecdir=/usr/libexec'
         - '-Dintrospection=disabled'
-        - '-Dptp-helper-setuid-user=false'
-        - '-Dptp-helper-setuid-group=false'
-        - '-Dptp-helper-permissions=none'
+        - '-Dptp-helper-permissions=setuid-root'
+        - '-Dptp-helper-setuid-user=nobody'
+        - '-Dptp-helper-setuid-group=nobody'
         - '-Dlibunwind=disabled'
         - '-Dlibdw=disabled'
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
-        - '-Dpackage-origin=https://github.com/no92/linux-mlibc/'
-        - '-Dpackage-name="GStreamer 1.19.1 Linux-mlibc"'
+        - '-Dpackage-origin=https://github.com/managarm/linux-mlibc/'
+        - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
