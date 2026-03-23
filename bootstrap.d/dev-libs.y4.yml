@@ -1238,12 +1238,18 @@ packages:
 
   - name: nettle
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Low-level cryptographic library
+      description: This package contains a low-level cryptographic library that is designed to fit easily in many contexts.
+      spdx: 'LGPL-3.1-only GPL-3.0-only'
+      website: 'https://www.lysator.liu.se/~nisse/nettle/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
-      tag: 'nettle_3.7.3_release_20210606'
-      version: '3.7.3'
+      tag: 'nettle_3.10.2_release_20250626'
+      version: '3.10.2'
       tools_required:
         - cross-toolchain
       regenerate:
