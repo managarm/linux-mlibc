@@ -236,7 +236,6 @@ packages:
 
   - name: double-conversion
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Efficient binary-decimal and decimal-binary conversion routines for IEEE doubles
       description: This package provides a library with conversion routines for binary to decimal and decimal to binary with IEEE doubles.
@@ -247,8 +246,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/google/double-conversion.git'
-      tag: 'v3.1.5'
-      version: '3.1.5'
+      tag: 'v3.4.0'
+      version: '3.4.0'
     tools_required:
       - cross-cmake
       - cross-toolchain
