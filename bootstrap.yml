@@ -326,18 +326,19 @@ packages:
     revision: 1
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '--libdir=lib'
-          - '-Dno_headers=true'
-          - '-Dbuildtype=debug'
-          - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/include'
-          - '-Dld_library_name=ld-linux-mlibc'
-          - '-Duse_freestnd_hdrs=enabled'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '-Dno_headers=true'
+        - '-Dbuildtype=debug'
+        - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/include'
+        - '-Dld_library_name=ld-linux-mlibc'
+        - '-Duse_freestnd_hdrs=enabled'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
