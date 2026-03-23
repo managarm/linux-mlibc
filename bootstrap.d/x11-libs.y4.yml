@@ -1603,18 +1603,18 @@ packages:
 
   - name: xcb-util-wm
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-wm.git'
-      tag: '0.4.1'
-      version: '0.4.1'
+      tag: 'xcb-util-wm-0.4.2'
+      version: '0.4.2'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain
