@@ -1402,18 +1402,18 @@ packages:
 
   - name: xcb-util
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-util.git'
-      tag: '0.4.0'
-      version: '0.4.0'
+      tag: 'xcb-util-0.4.1-gitlab'
+      version: '0.4.1'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
