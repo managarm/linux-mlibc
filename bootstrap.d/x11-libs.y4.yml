@@ -241,14 +241,17 @@ packages:
 
   - name: libfontenc
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
-      tag: 'libfontenc-1.1.4'
-      version: '1.1.4'
+      tag: 'libfontenc-1.1.9'
+      version: '1.1.9'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-libtool
+        - cross-pkg-config
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - host-xorg-macros
         - cross-autoconf-archive
         - host-xorg-font-util
