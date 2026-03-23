@@ -1227,12 +1227,11 @@ packages:
 
   - name: libxtst
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
-      tag: 'libXtst-1.2.3'
-      version: '1.2.3'
+      tag: 'libXtst-1.2.5'
+      version: '1.2.5'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
