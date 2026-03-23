@@ -462,12 +462,18 @@ packages:
 
   - name: qtwayland6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The Qt6 Wayland library
+      description: This package provides the Qt6 Wayland library, giving Qt6 Wayland support.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'
+      website: 'https://code.qt.io/cgit/qt/qtwayland.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtwayland.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
