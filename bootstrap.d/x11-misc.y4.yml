@@ -72,7 +72,6 @@ packages:
 
   - name: xkeyboard-config
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
