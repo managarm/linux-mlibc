@@ -241,14 +241,17 @@ packages:
 
   - name: libfontenc
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
-      tag: 'libfontenc-1.1.4'
-      version: '1.1.4'
+      tag: 'libfontenc-1.1.9'
+      version: '1.1.9'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-libtool
+        - cross-pkg-config
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - host-xorg-macros
         - cross-autoconf-archive
         - host-xorg-font-util
@@ -549,12 +552,11 @@ packages:
 
   - name: libxcursor
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
-      tag: 'libXcursor-1.2.0'
-      version: '1.2.0'
+      tag: 'libXcursor-1.2.3'
+      version: '1.2.3'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
@@ -583,6 +585,42 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxcvt
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: X.Org xcvt library and cvt program
+      description: VESA CVT standard timing modeline generation library & utility.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/xserver.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxcvt.git'
+      tag: 'libxcvt-0.1.3'
+      version: '0.1.3'
+    tools_required:
+      - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
@@ -744,14 +782,17 @@ packages:
 
   - name: libxfont2
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
-      tag: 'libXfont2-2.0.5'
-      version: '2.0.5'
+      tag: 'libXfont2-2.0.7'
+      version: '2.0.7'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-libtool
+        - cross-pkg-config
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - host-xorg-macros
         - cross-autoconf-archive
         - host-xtrans
@@ -786,8 +827,6 @@ packages:
         - '--disable-static'
         - '--with-bzip2'
         - '--disable-devel-docs'
-        # strcasecmp is implicitly declared, probably an missing include somewhere, so disable -Werror for that
-        - '--disable-selective-werror'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -796,12 +835,11 @@ packages:
 
   - name: libxft
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
-      tag: 'libXft-2.3.4'
-      version: '2.3.4'
+      tag: 'libXft-2.3.9'
+      version: '2.3.9'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
@@ -926,12 +964,11 @@ packages:
 
   - name: libxkbcommon
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.3.1'
-      version: '1.3.1'
+      tag: 'xkbcommon-1.13.1'
+      version: '1.13.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -972,22 +1009,15 @@ packages:
 
   - name: libxkbfile
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
-      tag: 'libxkbfile-1.1.0'
-      version: '1.1.0'
-      tools_required:
-        - cross-toolchain
-        - host-xorg-macros
-        - cross-autoconf-archive
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'libxkbfile-1.2.0'
+      version: '1.2.0'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - libx11
@@ -996,15 +1026,18 @@ packages:
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--sysconfdir=/etc'
-        - '--localstatedir=/var'
-        - '--disable-static'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
@@ -1279,12 +1312,18 @@ packages:
 
   - name: pango
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Internationalized text layout and rendering library
+      description: Pango is a library for laying out and rendering text, with an emphasis on internationalization. It can be used anywhere that text layout is needed, though most of the work on Pango so far has been done in the context of the GTK+ widget toolkit.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/pango'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.48.10'
-      version: '1.48.10'
+      tag: '1.57.1'
+      version: '1.57.1'
     tools_required:
       - cross-toolchain
       - host-glib
@@ -1363,18 +1402,18 @@ packages:
 
   - name: xcb-util
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-util.git'
-      tag: '0.4.0'
-      version: '0.4.0'
+      tag: 'xcb-util-0.4.1-gitlab'
+      version: '0.4.1'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
@@ -1403,20 +1442,63 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name: xcb-util-image
+  - name: xcb-util-cursor
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
-      git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-image.git'
-      tag: '0.4.0'
-      version: '0.4.0'
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-cursor.git'
+      tag: 'xcb-util-cursor-0.1.6'
+      version: '0.1.6'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libxcb
+      - xcb-util-image
+      - xcb-util-render-util
+      - xorg-proto
+      - xcb-util
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        - '--without-doxygen'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xcb-util-image
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-image.git'
+      tag: 'xcb-util-image-0.4.1-gitlab'
+      version: '0.4.1'
+      tools_required:
+        - cross-toolchain
+        - host-xorg-macros
+        - cross-autoconf-archive
+      regenerate:
+        - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain
@@ -1483,18 +1565,19 @@ packages:
 
   - name: xcb-util-render-util
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-render-util.git'
-      tag: '0.3.9'
-      version: '0.3.9'
+      branch: 'master'
+      commit: '5ad9853d6ddcac394d42dd2d4e34436b5db9da39'
+      version: '0.3.10'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain

@@ -23,6 +23,12 @@ sources:
     regenerate:
       - args: ['autoreconf', '-f', '-i']
 
+  - name: hwdata
+    subdir: 'ports'
+    git: 'https://github.com/vcrhonek/hwdata.git'
+    tag: 'v0.400'
+    version: '0.400'
+
   - name: util-linux
     subdir: ports
     git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
@@ -40,6 +46,20 @@ tools:
         - '--prefix=@PREFIX@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+  - name: host-hwdata
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    from_source: hwdata
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_BUILD_DIR@/configure'
+        - '--prefix=@PREFIX@/usr'
+        - '--libdir=@PREFIX@/lib'
+        - '--datadir=@PREFIX@/share'
     install:
       - args: ['make', 'install']
 
@@ -868,7 +888,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -994,9 +1014,6 @@ packages:
       - args: ['systemd-hwdb', '--usr', '-r', '@THIS_COLLECT_DIR@', 'update']
       - args: ['systemd-machine-id-setup', '--root=@SYSROOT_DIR@']
       - args: ['rm', '@THIS_COLLECT_DIR@/lib']
-      # Enable getty on tty1
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/systemd/system/getty.target.wants']
-      - args: ['ln', '-s', '/usr/lib/systemd/system/getty@tty1.service', '@THIS_COLLECT_DIR@/etc/systemd/system/getty.target.wants']
       # This setup is temporary, NetworkManager will replace this
       # Enable networkd
       - args: ['systemctl', '--root=@THIS_COLLECT_DIR@', 'enable', 'systemd-networkd.service']

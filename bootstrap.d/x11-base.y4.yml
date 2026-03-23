@@ -158,3 +158,78 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xwayland
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standalone X server running under Wayland
+      description: Wayland is a complete window system in itself, but even so, if we're migrating away from X, it makes sense to have a good backwards compatibility story. With a few changes, the Xorg server can be modified to use wayland input devices for input and forward either the root window or individual top-level windows as wayland surfaces. The server still runs the same 2D driver with the same acceleration code as it does when it runs natively. The main difference is that wayland handles presentation of the windows instead of KMS.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/xserver.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-base']
+      replaces: ['xorg-server']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
+      tag: 'xwayland-24.1.9'
+      version: '24.1.9'
+    tools_required:
+      - cross-toolchain
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    pkgs_required:
+      - mlibc
+      - libdrm
+      - libepoxy
+      - libxcb
+      - libxcvt
+      - libxdmcp
+      - libxext
+      - libxfont2
+      - libxkbfile
+      - libxshmfence
+      - nettle
+      - pixman
+      - systemd
+      - wayland
+      - wayland-protocols
+      - xcb-proto
+      - xkbcomp
+      - xorg-proto
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '-Dxkb_dir=/usr/share/X11/xkb'
+        - '-Dxkb_bin_dir=/usr/bin'
+        - '-Dxvfb=false'
+        - '-Dxkb_output_dir=/var/lib/xkb'
+        - '-Dvendor_name="The linux-mlibc Project"'
+        - '-Dvendor_name_short="linux-mlibc"'
+        - '-Dvendor_web="https://managarm.org"'
+        - '-Dfontrootdir=/usr/share/fonts/X11'
+        - '-Ddpms=false'
+        - '-Dscreensaver=false'
+        - '-Dxres=false'
+        - '-Dxinerama=false'
+        - '-Dxv=false'
+        - '-Dsecure-rpc=false'
+        - '-Dglx=true'
+        - '-Ddri3=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

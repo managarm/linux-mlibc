@@ -127,14 +127,17 @@ packages:
 
   - name: xkbcomp
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkbcomp.git'
-      tag: 'xkbcomp-1.4.5'
-      version: '1.4.5'
+      tag: 'xkbcomp-1.5.0'
+      version: '1.5.0'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-libtool
+        - cross-pkg-config
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - host-xorg-macros
       regenerate:
         - args: ['./autogen.sh']
