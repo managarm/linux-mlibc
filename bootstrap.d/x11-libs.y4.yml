@@ -746,14 +746,17 @@ packages:
 
   - name: libxfont2
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
-      tag: 'libXfont2-2.0.5'
-      version: '2.0.5'
+      tag: 'libXfont2-2.0.7'
+      version: '2.0.7'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-libtool
+        - cross-pkg-config
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - host-xorg-macros
         - cross-autoconf-archive
         - host-xtrans
@@ -788,8 +791,6 @@ packages:
         - '--disable-static'
         - '--with-bzip2'
         - '--disable-devel-docs'
-        # strcasecmp is implicitly declared, probably an missing include somewhere, so disable -Werror for that
-        - '--disable-selective-werror'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
