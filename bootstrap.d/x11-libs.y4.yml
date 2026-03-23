@@ -552,12 +552,11 @@ packages:
 
   - name: libxcursor
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
-      tag: 'libXcursor-1.2.0'
-      version: '1.2.0'
+      tag: 'libXcursor-1.2.3'
+      version: '1.2.3'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
