@@ -300,7 +300,6 @@ packages:
 
   - name: gst-plugins-base
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Basepack of plugins for GStreamer
       description: The GStreamer Base Plug-ins is a well-groomed and well-maintained collection of GStreamer plug-ins and elements, spanning the range of possible types of elements one would want to write for GStreamer.
@@ -310,9 +309,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-base.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.28.1.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-base-1.28.1'
+      checksum: blake2b:9a7690c52b54521d747553387d4e6c47623e6fb47701d767eb16630724a1ab5ecfebd7ef87c4afb85c4842c369a7e94e983afa8f72d4224e2f50234ed77cef7a
+      version: '1.28.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -355,8 +356,8 @@ packages:
         - '--wrap-mode=nodownload'
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
-        - '-Dpackage-origin=https://github.com/no92/linux-mlibc/'
-        - '-Dpackage-name="GStreamer 1.19.1 Linux-mlibc"'
+        - '-Dpackage-origin=https://github.com/managarm /linux-mlibc/'
+        - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
