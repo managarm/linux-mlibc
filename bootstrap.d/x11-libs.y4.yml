@@ -511,7 +511,6 @@ packages:
 
   - name: libxcomposite
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: X.Org Xcomposite library
       description: This package contains the X.Org Xcomposite library.
@@ -522,8 +521,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcomposite.git'
-      tag: 'libXcomposite-0.4.5'
-      version: '0.4.5'
+      tag: 'libXcomposite-0.4.7'
+      version: '0.4.7'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
