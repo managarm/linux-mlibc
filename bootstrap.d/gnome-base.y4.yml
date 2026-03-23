@@ -1,7 +1,6 @@
 packages:
   - name: gsettings-desktop-schemas
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Collection of GSettings schemas for GNOME desktop
       description: This package contains a collection of GSettings schemas for settings shared by various components of a GNOME Desktop.
@@ -12,11 +11,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas.git'
-      tag: '3.38.0'
-      version: '3.38.0'
+      tag: '48.0'
+      version: '48.0'
     tools_required:
       - cross-toolchain
-      - host-gobject-introspection
+      # - host-gobject-introspection
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
@@ -39,7 +38,6 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-    # xbps broke?
-    # scripts:
-    #     post_install:
-    #       - args: 'glib-compile-schemas /usr/share/glib-2.0/schemas'
+    scripts:
+        post_install:
+          - args: 'glib-compile-schemas /usr/share/glib-2.0/schemas'
