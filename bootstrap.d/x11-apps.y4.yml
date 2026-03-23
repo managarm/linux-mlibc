@@ -1,22 +1,26 @@
 packages:
   - name: mesa-demos
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Mesa's OpenGL utility and demo programs
+      description: Mesa's OpenGL utility and demo programs
+      spdx: 'LGPL-2.0-only'
+      website: 'https://gitlab.freedesktop.org/mesa/demos'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-apps']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/mesa/demos.git'
-      tag: 'mesa-demos-8.4.0'
-      version: '8.4.0'
-      tools_required:
-        - cross-toolchain
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'mesa-demos-9.0.0'
+      version: '9.0.0'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
     pkgs_required:
       - mlibc
+      - dbus
       - freeglut
       - freetype
       - glew
@@ -24,25 +28,29 @@ packages:
       - libdrm
       - libx11
       - libxext
+      - libxkbcommon
       - mesa
       - wayland
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--sysconfdir=/etc'
-        - '--localstatedir=/var'
-        - '--disable-static'
-        - '--disable-gles1' # Requires some linux header that we don't have
-        - '--disable-vg'
-        - '--disable-osmesa'
-        - '--disable-rbug'
-        - '--with-system-data-files'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dwith-system-data-files=true'
+        - '-Dosmesa=disabled'
+        - '-Dwayland=disabled' # No GTK-3 yet, libdecor needs that
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+        environ:
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/tools/wayland-scanner/lib/x86_64-linux-gnu/pkgconfig:@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
