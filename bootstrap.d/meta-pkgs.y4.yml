@@ -36,6 +36,8 @@ packages:
       - nano
       - ca-certificates
       - xbps
-    revision: 16
+      - locale-data
+      - which
+    revision: 17
     configure: []
     build: []

@@ -288,12 +288,11 @@ packages:
 
   - name: libice
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
-      tag: 'libICE-1.0.10'
-      version: '1.0.10'
+      tag: 'libICE-1.1.2'
+      version: '1.1.2'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
@@ -328,12 +327,11 @@ packages:
 
   - name: libsm
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
-      tag: 'libSM-1.2.3'
-      version: '1.2.3'
+      tag: 'libSM-1.2.6'
+      version: '1.2.6'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
@@ -916,7 +914,6 @@ packages:
 
   - name: libxinerama
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: X.Org Xinerama library
       description: This package contains the X.Org Xinerama library.
@@ -927,8 +924,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libXinerama.git'
-      tag: 'libXinerama-1.1.4'
-      version: '1.1.4'
+      tag: 'libXinerama-1.1.6'
+      version: '1.1.6'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
@@ -1230,12 +1227,11 @@ packages:
 
   - name: libxtst
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
-      tag: 'libXtst-1.2.3'
-      version: '1.2.3'
+      tag: 'libXtst-1.2.5'
+      version: '1.2.5'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
@@ -1526,18 +1522,19 @@ packages:
 
   - name: xcb-util-keysyms
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-keysyms.git'
-      tag: '0.4.0'
-      version: '0.4.0'
+      branch: 'master'
+      commit: 'ef5cb393d27511ba511c68a54f8ff7b9aab4a384'
+      version: '0.4.1'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain
@@ -1605,18 +1602,18 @@ packages:
 
   - name: xcb-util-wm
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-wm.git'
-      tag: '0.4.1'
-      version: '0.4.1'
+      tag: 'xcb-util-wm-0.4.2'
+      version: '0.4.2'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain

@@ -15,6 +15,11 @@ jobs:
     packages:
       - icu
 
+  - name: cross-qt6
+    capabilities: ["heavy"]
+    tools:
+      - cross-qt6
+
   # - name: webkitgtk
   #   capabilities: ["heavy"]
   #   packages:

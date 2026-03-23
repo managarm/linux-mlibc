@@ -3,23 +3,21 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.3.1'
-    version: '6.3.1'
+    tag: 'v6.11.0'
+    version: '6.11.0'
     regenerate:
       # Get the submodules that we'll need as a host tool
-      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtwayland,qtdeclarative,qtmultimedia']
+      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech']
+        isolate_network: false
 
 tools:
   # We do a limited superbuild with only the needed modules of Qt6 to satisfy host tooling.
   - name: cross-qt6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     from_source: qt6
     tools_required:
       - cross-cmake
-      # - wayland-scanner
-      - cross-wayland
-      - cross-wayland-protocols
+      - wayland-scanner
     revision: 1
     configure:
       - args:
@@ -29,19 +27,62 @@ tools:
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DQT_BUILD_EXAMPLES=OFF'
         - '-DQT_BUILD_TESTS=OFF'
+        - '-DFEATURE_xkbcommon=ON'
+        - '-DFEATURE_xkbcommon_x11=ON'
+        - '-DFEATURE_xlib=ON'
+        - '-DFEATURE_xcb=ON'
+        - '-DFEATURE_xcb_xlib=ON'
+        - '-DFEATURE_opengl=ON'
+        - '-DFEATURE_egl=ON'
         - '@THIS_SOURCE_DIR@'
     compile:
-      - args: ['cmake', '--build', '.', '--parallel', '6']
-        # environ:
-        #   # Chromium (aka qtwebengine) will OOM otherwise
-        #   NINJAJOBS: '6'
+      - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
     install:
       - args: ['cmake', '--install', '.']
 
 packages:
+  - name: qt5compat
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt module containing the unsupported Qt 5 APIs
+      description: This package provides the Qt5 compatibility package, containing the unsupported Qt5 APIs.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only FDL-1.3-only'
+      website: 'https://github.com/qt/qt5compat'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qt5compat.git'
+      tag: 'v6.11.0'
+      version: '6.11.0'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+    pkgs_required:
+      - mlibc
+      - icu
+      - qtbase6
+      - qtdeclarative6
+      - qtshadertools6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/cross-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: qtbase6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 base libraries
       description: This package provides the Qt6 base libraries, including QtCore, QtGui, QtWidgets and QtNetwork.
@@ -52,15 +93,16 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-cmake
       - cross-qt6
       - cross-toolchain
     pkgs_required:
       - mlibc
-      # - brotli
+      - at-spi2-core
+      - brotli
       - dbus
       - double-conversion
       - fontconfig
@@ -90,6 +132,7 @@ packages:
       - sqlite
       - wayland
       - wayland-protocols
+      - xcb-util-cursor
       - xcb-util-image
       - xcb-util-keysyms
       - xcb-util-render-util
@@ -102,6 +145,9 @@ packages:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/cross-qt6'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
+        - '-DQT_NO_GENERATE_QMAKE_WRAPPER_FOR_TARGET=ON'
+        - '-DBUILD_WITH_PCH=OFF'
         - '-DCMAKE_INSTALL_PREFIX=@THIS_COLLECT_DIR@/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -121,37 +167,42 @@ packages:
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DQT_BUILD_EXAMPLES=OFF'
         - '-DQT_BUILD_TESTS=OFF'
-        - '-DFEATURE_concurrent=ON'
-        - '-DFEATURE_dbus=OFF'
-        - '-DFEATURE_gui=ON'
-        - '-DFEATURE_network=ON'
-        - '-DFEATURE_printsupport=ON'
-        - '-DFEATURE_sql=ON'
-        - '-DFEATURE_testlib=ON'
-        - '-DFEATURE_widgets=ON'
-        - '-DFEATURE_libudev=ON'
-        - '-DFEATURE_icu=ON'
-        - '-DFEATURE_glib=ON'
-        - '-DFEATURE_pcre2=ON'
-        - '-DFEATURE_xml=ON'
-        - '-DFEATURE_harfbuzz=ON'
-        - '-DFEATURE_xkbcommon=ON'
-        - '-DFEATURE_xkbcommon_x11=ON'
-        - '-DFEATURE_libinput=ON'
-        - '-DFEATURE_evdev=ON'
-        - '-DFEATURE_mtdev=ON'
-        - '-DFEATURE_egl=ON'
-        - '-DFEATURE_opengl=ON'
-        - '-DFEATURE_accessibility=OFF'
-        - '-DFEATURE_xlib=ON'
-        - '-DFEATURE_xcb=ON'
-        - '-DFEATURE_xcb_xlib=ON'
-        - '-DFEATURE_eglfs_gbm=ON'
-        - '-DFEATURE_eglfs_egldevice=ON'
-        - '-DFEATURE_gtk3=OFF'
-        - '-DFEATURE_system_sqlite=ON'
-        - '-DFEATURE_cups=OFF'
-        - '-DFEATURE_ssl=ON'
+        - '-DQT_FEATURE_concurrent=ON'
+        - '-DQT_FEATURE_dbus=ON'
+        - '-DQT_FEATURE_gui=ON'
+        - '-DQT_FEATURE_network=ON'
+        - '-DQT_FEATURE_printsupport=ON'
+        - '-DQT_FEATURE_sql=ON'
+        - '-DQT_FEATURE_testlib=ON'
+        - '-DQT_FEATURE_widgets=ON'
+        - '-DQT_FEATURE_wayland=ON'
+        - '-DQT_FEATURE_vulkan=OFF'
+        - '-DQT_FEATURE_libudev=ON'
+        - '-DQT_FEATURE_icu=ON'
+        - '-DQT_FEATURE_glib=ON'
+        - '-DQT_FEATURE_pcre2=ON'
+        - '-DQT_FEATURE_xml=ON'
+        - '-DQT_FEATURE_harfbuzz=ON'
+        - '-DQT_FEATURE_xkbcommon=ON'
+        - '-DQT_FEATURE_xkbcommon_x11=ON'
+        - '-DQT_FEATURE_libinput=ON'
+        - '-DQT_FEATURE_evdev=ON'
+        - '-DQT_FEATURE_mtdev=ON'
+        - '-DQT_FEATURE_egl=ON'
+        - '-DQT_FEATURE_opengl=ON'
+        - '-DQT_FEATURE_accessibility=ON'
+        - '-DQT_FEATURE_xlib=ON'
+        - '-DQT_FEATURE_xcb=ON'
+        - '-DQT_FEATURE_xcb_xlib=ON'
+        - '-DQT_FEATURE_eglfs_gbm=ON'
+        - '-DQT_FEATURE_eglfs_egldevice=ON'
+        - '-DQT_FEATURE_gtk3=OFF'
+        - '-DQT_FEATURE_system_sqlite=ON'
+        - '-DQT_FEATURE_cups=OFF'
+        - '-DQT_FEATURE_ssl=ON'
+        - '-DQT_FEATURE_jemalloc=OFF'
+        - '-DQT_FEATURE_androiddeployqt=OFF'
+        - '-DQT_UNITY_BUILD=ON'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -159,14 +210,9 @@ packages:
     build:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
       - args: ['cmake', '--install', '.']
-      # Touch a file in empty directories to keep xbps happy
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/QtBuildInternals/QtStandaloneTestTemplateProject/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/macos/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/ios/.keep']
 
   - name: qtdeclarative6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 declarative library
       description: This package provides the Qt6 declarative library, containing support for QML and QtQuick.
@@ -177,8 +223,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -210,7 +256,6 @@ packages:
 
   - name: qtimageformats6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 imageformats library
       description: This package provides the Qt6 imageformats library, giving Qt6 support for several image formats.
@@ -221,8 +266,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtimageformats.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -244,8 +289,10 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
-        - '-DINPUT_webp=system'
-        - '-DINPUT_tiff=system'
+        - '-DQT_FEATURE_jasper=OFF'
+        - '-DQT_FEATURE_tiff=ON'
+        - '-DQT_FEATURE_webp=ON'
+        - '-DQT_FEATURE_mng=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -255,7 +302,6 @@ packages:
 
   - name: qtlanguageserver6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 LSP library
       description: This package provides the Qt6 LSP (Language Server Protocol) library, giving Qt6 support for LSP.
@@ -266,8 +312,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -293,7 +339,6 @@ packages:
 
   - name: qtmultimedia6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 multimedia library
       description: This package provides the Qt6 multimedia library, containing support for multimedia (audio, video, radio and camera's) in Qt6.
@@ -304,8 +349,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -327,9 +372,9 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
-        - '-DFEATURE_gstreamer=ON'
-        - '-DFEATURE_alsa=OFF'
-        - '-DFEATURE_pulseaudio=OFF'
+        - '-DQT_DFEATURE_gstreamer=ON'
+        - '-DQT_DFEATURE_alsa=OFF'
+        - '-DQT_DFEATURE_pulseaudio=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -339,7 +384,6 @@ packages:
 
   - name: qtshadertools6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 shadertools library
       description: This package provides the Qt6 shadertools library, giving Qt6 shader support.
@@ -350,8 +394,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -367,7 +411,7 @@ packages:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/cross-qt6'
-        - '-DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -380,7 +424,6 @@ packages:
 
   - name: qtsvg6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 SVG library
       description: This package provides the Qt6 SVG library, giving Qt6 SVG support.
@@ -391,8 +434,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake

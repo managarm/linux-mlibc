@@ -1,19 +1,18 @@
 packages:
   - name: alsa-lib
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
-      summary: alsa-lib
-      description: Placeholder
+      summary: Advanced Linux Sound Architecture Library
+      description: This package contains the ALSA library used by programs (including ALSA Utilities) requiring access to the ALSA sound interface.
       spdx: 'LGPL-2.1-only'
       website: 'https://alsa-project.org/wiki/Main_Page'
-      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/alsa-project/alsa-lib.git'
-      tag: 'v1.2.6.1'
-      version: '1.2.6.1'
+      tag: 'v1.2.15.3'
+      version: '1.2.15.3'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -301,7 +300,6 @@ packages:
 
   - name: gst-plugins-base
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Basepack of plugins for GStreamer
       description: The GStreamer Base Plug-ins is a well-groomed and well-maintained collection of GStreamer plug-ins and elements, spanning the range of possible types of elements one would want to write for GStreamer.
@@ -311,9 +309,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-base.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.28.1.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-base-1.28.1'
+      checksum: blake2b:9a7690c52b54521d747553387d4e6c47623e6fb47701d767eb16630724a1ab5ecfebd7ef87c4afb85c4842c369a7e94e983afa8f72d4224e2f50234ed77cef7a
+      version: '1.28.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -356,8 +356,8 @@ packages:
         - '--wrap-mode=nodownload'
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
-        - '-Dpackage-origin=https://github.com/no92/linux-mlibc/'
-        - '-Dpackage-name="GStreamer 1.19.1 Linux-mlibc"'
+        - '-Dpackage-origin=https://github.com/managarm /linux-mlibc/'
+        - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -427,7 +427,6 @@ packages:
 
   - name: gstreamer
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Open source multimedia framework
       description: This package contains a streaming media framework that enables applications to share a common set of plugins for tasks such as video encoding and decoding, audio encoding and decoding, audio and video filters, audio visualisation, web streaming and anything else that streams in real-time or otherwise. This package only provides base functionality and libraries of the GStreamer stack.
@@ -437,9 +436,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gstreamer.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.28.1.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gstreamer-1.28.1'
+      checksum: blake2b:856a7556ef18e10698750db3223fe03d6d692bd4aa2e5d4675c647d46f80f21d4817d764df07b1a3408fbf7e8bda71cbeb1d0470f47caf23f0d41d6ff72c3125
+      version: '1.28.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -457,16 +458,18 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '-Dtools=enabled'
+        - '-Dlibexecdir=/usr/libexec'
         - '-Dintrospection=disabled'
-        - '-Dptp-helper-setuid-user=false'
-        - '-Dptp-helper-setuid-group=false'
-        - '-Dptp-helper-permissions=none'
+        - '-Dptp-helper-permissions=setuid-root'
+        - '-Dptp-helper-setuid-user=nobody'
+        - '-Dptp-helper-setuid-group=nobody'
         - '-Dlibunwind=disabled'
         - '-Dlibdw=disabled'
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
-        - '-Dpackage-origin=https://github.com/no92/linux-mlibc/'
-        - '-Dpackage-name="GStreamer 1.19.1 Linux-mlibc"'
+        - '-Dpackage-origin=https://github.com/managarm/linux-mlibc/'
+        - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -745,12 +748,18 @@ packages:
 
   - name: libogg
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The Ogg media file format library
+      description: This package contains the Ogg file structure. This is useful for creating (encoding) or playing (decoding) a single physical bit stream.
+      spdx: 'BSD'
+      website: 'https://xiph.org/ogg/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/ogg.git'
-      tag: 'v1.3.5'
-      version: '1.3.5'
+      tag: 'v1.3.6'
+      version: '1.3.6'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -816,14 +825,24 @@ packages:
 
   - name: libtheora
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The Theora Video Compression Codec
+      description: This package contains the Theora Video Compression Codec.
+      spdx: 'BSD'
+      website: 'https://www.theora.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/theora.git'
-      tag: 'v1.1.1'
-      version: '1.1.1'
+      tag: 'v1.2.0'
+      version: '1.2.0'
       tools_required:
-        - cross-toolchain
+        - cross-gcc
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
+        - cross-libtool
+        - cross-pkg-config
       regenerate:
         - args: ['./autogen.sh']
     tools_required:
@@ -905,7 +924,13 @@ packages:
 
   - name: libvorbis
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: The Ogg Vorbis sound file format library
+      description: This package contains a general purpose audio and music encoding format. This is useful for creating (encoding) and playing (decoding) sound in an open (patent free) format.
+      spdx: 'BSD'
+      website: 'https://xiph.org/vorbis/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/vorbis.git'
@@ -1054,7 +1079,6 @@ packages:
 
   - name: opus
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Open codec for interactive speech and music transmission over the Internet
       description: Opus is a lossy audio compression format developed by the Internet Engineering Task Force (IETF) that is particularly suitable for interactive speech and audio transmission over the Internet. This package provides the Opus development library and headers.
@@ -1065,12 +1089,13 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.xiph.org/xiph/opus.git'
-      tag: 'v1.3.1'
-      version: '1.3.1'
+      tag: 'v1.6.1'
+      version: '1.6.1'
       tools_required:
         - cross-toolchain
       regenerate:
         - args: ['./autogen.sh']
+          isolate_network: false
     tools_required:
       - cross-toolchain
     pkgs_required:
@@ -1081,7 +1106,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--docdir=/usr/share/doc/opus-1.3.1'
+        - '--docdir=/usr/share/doc/opus-1.6.1'
         - '--disable-static'
         - '--disable-intrinsics'
         - '--disable-doc'
