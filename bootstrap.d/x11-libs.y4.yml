@@ -126,12 +126,18 @@ packages:
 
   - name: gtk+-3
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Gimp ToolKit +
+      description: The GTK+ 3 package contains libraries used for creating graphical user interfaces for applications.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://www.gtk.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/gtk.git'
-      tag: '3.24.23'
-      version: '3.24.23'
+      tag: '3.24.51'
+      version: '3.24.51'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -140,8 +146,7 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
-      - atk
-      - at-spi2-atk
+      - at-spi2-core
       - cairo
       - dbus
       - fontconfig
@@ -182,7 +187,6 @@ packages:
         - '-Dprint_backends=file'
         - '-Dintrospection=false'
         - '-Dx11_backend=true'
-        # - '-Dx11_backend=false'
         - '-Dbroadway_backend=true'
         - '-Dwayland_backend=true'
         - '-Dgtk_doc=false'
@@ -193,11 +197,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-    # xbps broke?
-    # scripts:
-    #     post_install:
-    #       - args: ['gtk-query-immodules-3.0', '--update-cache']
-    #       - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
+    scripts:
+        post_install:
+          - args: ['gtk-query-immodules-3.0', '--update-cache']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
 
   - name: libdrm
     architecture: '@OPTION:arch@'
