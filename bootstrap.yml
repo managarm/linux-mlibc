@@ -45,11 +45,11 @@ imports:
 sources:
   - name: linux
     subdir: ports
-    url: 'https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.8.tar.xz'
-    checksum: 'blake2b:62a3f435bbe7d24bea361f2545ba50f8b36030a98bd28d0979b86052d8af34dc7a4c27f7ca2890daba5e5bb51f5848e6b21cd5df4dbbd19919867bf67d38790d'
-    extract_path: 'linux-6.12.8'
+    url: 'https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.9.tar.xz'
+    checksum: 'blake2b:6be41037c5b18e9a8d1c58fdd613e37bb5c841b7f43baf95516f3dda461adc6eb20da03e6a8892bd5b8410125ad42dae8ef4634a0eb95b84aaf3882a6ed00074'
+    extract_path: 'linux-6.19.9'
     format: 'tar.xz'
-    version: '6.12.8'
+    version: '6.19.9'
 
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
@@ -276,7 +276,7 @@ packages:
     from_source: linux
     tools_required:
       - tool: cross-gcc
-    revision: 2
+    revision: 1
     configure:
       - args: ['rsync', '-ar', '@THIS_SOURCE_DIR@/', '@THIS_BUILD_DIR@/']
       - args: ['make', 'mrproper']
