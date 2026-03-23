@@ -814,7 +814,6 @@ packages:
 
   - name: libtiff
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Tag Image File Format (TIFF) library
       description: This package contains the TIFF libraries and associated utilities. The libraries are used by many programs for reading and writing TIFF files and the utilities are used for general work with TIFF files.
@@ -825,8 +824,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.com/libtiff/libtiff.git'
-      tag: 'v4.3.0'
-      version: '4.3.0'
+      tag: 'v4.7.1'
+      version: '4.7.1'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -849,7 +848,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-shared'
-        - '--with-docdir=/usr/share/doc/libtiff-4.3.0'
+        - '--with-docdir=/usr/share/doc/libtiff-4.7.1'
         - '--without-x'
         - '--enable-zlib'
         - '--enable-zstd'
