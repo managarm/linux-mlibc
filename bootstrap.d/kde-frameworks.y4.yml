@@ -891,6 +891,7 @@ packages:
     from_source: kguiaddons
     tools_required:
       - cross-gcc
+      - cross-binutils
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
       - cross-cmake
