@@ -914,7 +914,6 @@ packages:
 
   - name: libxinerama
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: X.Org Xinerama library
       description: This package contains the X.Org Xinerama library.
@@ -925,8 +924,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libXinerama.git'
-      tag: 'libXinerama-1.1.4'
-      version: '1.1.4'
+      tag: 'libXinerama-1.1.6'
+      version: '1.1.6'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
