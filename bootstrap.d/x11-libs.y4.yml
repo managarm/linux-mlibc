@@ -1276,12 +1276,18 @@ packages:
 
   - name: pango
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Internationalized text layout and rendering library
+      description: Pango is a library for laying out and rendering text, with an emphasis on internationalization. It can be used anywhere that text layout is needed, though most of the work on Pango so far has been done in the context of the GTK+ widget toolkit.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/pango'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.48.10'
-      version: '1.48.10'
+      tag: '1.57.1'
+      version: '1.57.1'
     tools_required:
       - cross-toolchain
       - host-glib
