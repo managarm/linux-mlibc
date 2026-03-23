@@ -1,8 +1,6 @@
 packages:
   - name: libremines
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
-    architecture: '@OPTION:arch@'
     metadata:
       summary: Qt based minesweeper
       description: This package provides a Free/Libre and Open Source Software Qt based Minesweeper game available for GNU/Linux, FreeBSD, Windows and Managarm systems.
@@ -13,8 +11,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/Bollos00/LibreMines.git'
-      tag: 'v1.9.1'
-      version: '1.9.1'
+      tag: 'v2.2.1'
+      version: '2.2.1'
     tools_required:
       - cross-toolchain
       - cross-cmake
