@@ -1503,12 +1503,18 @@ packages:
 
   - name: weston
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: 'A lightweight and functional Wayland compositor'
+      description: 'Weston is a Wayland compositor designed for correctness, reliability, predictability, and performance. Out of the box, Weston provides a very basic desktop, or a full-featured environment for non-desktop uses such as automotive, embedded, in-flight, industrial, kiosks, set-top boxes and TVs.'
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/wayland/weston'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/wayland-project/weston.git'
-      tag: '10.0.0'
-      version: '10.0.0'
+      git: 'https://gitlab.freedesktop.org/wayland/weston.git'
+      tag: '15.0.0'
+      version: '15.0.0'
     tools_required:
       - cross-toolchain
       - wayland-scanner
@@ -1521,17 +1527,20 @@ packages:
       - cairo
       - dejavu
       - glib
+      - libdisplay-info
       - libinput
       - libjpeg-turbo
       - libwebp
       - libxkbcommon
       - libxcursor
-      - linux-pam
       - mesa
+      - pam
       - pango
+      - seatd
       - wayland
       - wayland-protocols
-      - xorg-server
+      - xcb-util-cursor
+      - xwayland
     revision: 1
     configure:
       - args:
@@ -1546,16 +1555,18 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dbackend-x11=false'
         - '-Dsimple-clients=damage,im,egl,shm,touch'
-        - '-Dlauncher-logind=false'
-        - '-Dbackend-drm-screencast-vaapi=false'
         - '-Dbackend-rdp=false'
-        - '-Dcolor-management-colord=false'
+        - '-Dbackend-vnc=false'
+        - '-Dbackend-pipewire=false'
         - '-Dcolor-management-lcms=false'
-        - '-Dsystemd=false'
+        - '-Dimage-jpeg=true'
+        - '-Dimage-webp=true'
+        - '-Dsystemd=true'
         - '-Dremoting=false'
         - '-Dpipewire=false'
         - '-Dxwayland=true'
-        - '-Ddeprecated-weston-launch=true'
+        - '-Drenderer-vulkan=false'
+        - '-Dshell-lua=false'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -1565,3 +1576,9 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sockets.target.wants']
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants']
+      - args: ['cp', '-v', '@THIS_SOURCE_DIR@/weston.socket', '@THIS_COLLECT_DIR@/usr/lib/systemd/system']
+      - args: ['cp', '-v', '@THIS_SOURCE_DIR@/weston.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system']
+      - args: ['ln', '-svn', '../weston.socket', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sockets.target.wants/']
+      - args: ['ln', '-svn', '../weston.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/']
