@@ -78,12 +78,18 @@ packages:
 
   - name: gdk-pixbuf
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: Toolkit for image loading and pixel buffer manipulation
+      description: This package provides a toolkit for image loading and pixel buffer manipulation.
+      spdx: 'LGPL-2.1'
+      website: 'https://download.gnome.org/sources/gdk-pixbuf-xlib/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/gdk-pixbuf.git'
-      tag: '2.40.0'
-      version: '2.40.0'
+      tag: '2.44.5'
+      version: '2.44.5'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -93,6 +99,7 @@ packages:
       - glib
       - libjpeg-turbo
       - libpng
+      - libtiff
       - libx11
       - shared-mime-info
     revision: 1
@@ -103,8 +110,9 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '-Dgir=false'
+        - '-Dintrospection=disabled'
         - '-Dman=false'
+        - '-Dglycin=disabled'
         - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -112,10 +120,9 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-    # xbps broke?
-    # scripts:
-    #     post_install:
-    #       - args: ['gdk-pixbuf-query-loaders', '--update-cache']
+    scripts:
+        post_install:
+          - args: ['gdk-pixbuf-query-loaders', '--update-cache']
 
   - name: gtk+-3
     architecture: '@OPTION:arch@'
