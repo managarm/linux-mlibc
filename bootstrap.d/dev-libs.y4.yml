@@ -1521,9 +1521,11 @@ packages:
       version: '1.47'
     tools_required:
       - cross-toolchain
+      - wayland-scanner
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
-      - wayland-scanner
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
     pkgs_required:
       - mlibc
     revision: 1
