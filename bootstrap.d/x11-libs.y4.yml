@@ -973,22 +973,15 @@ packages:
 
   - name: libxkbfile
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
-      tag: 'libxkbfile-1.1.0'
-      version: '1.1.0'
-      tools_required:
-        - cross-toolchain
-        - host-xorg-macros
-        - cross-autoconf-archive
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'libxkbfile-1.2.0'
+      version: '1.2.0'
     tools_required:
       - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - libx11
@@ -997,15 +990,18 @@ packages:
     revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--sysconfdir=/etc'
-        - '--localstatedir=/var'
-        - '--disable-static'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
