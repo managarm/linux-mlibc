@@ -345,7 +345,6 @@ packages:
 
   - name: qtshadertools6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 shadertools library
       description: This package provides the Qt6 shadertools library, giving Qt6 shader support.
@@ -356,8 +355,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -373,7 +372,7 @@ packages:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/cross-qt6'
-        - '-DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
