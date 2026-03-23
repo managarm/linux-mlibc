@@ -799,12 +799,11 @@ packages:
 
   - name: libxft
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
-      tag: 'libXft-2.3.4'
-      version: '2.3.4'
+      tag: 'libXft-2.3.9'
+      version: '2.3.9'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
