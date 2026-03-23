@@ -5,6 +5,12 @@ sources:
     tag: 'v6.24.0'
     version: '6.24.0'
 
+  - name: kcodecs
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kcodecs.git'
+    tag: 'v6.24.0'
+    version: '6.24.0'
+
   - name: kconfig
     subdir: 'ports'
     git: 'https://github.com/KDE/kconfig.git'
@@ -60,6 +66,47 @@ tools:
       - args: ['ninja', 'install']
 
 packages:
+  - name: kcodecs
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for manipulating strings using various encodings
+      description: This package provides a framework for manipulating strings using various encodings.
+      spdx: 'LGPL-2.0-or-later GPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kcodecs
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: kconfig
     architecture: '@OPTION:arch@'
     metadata:
