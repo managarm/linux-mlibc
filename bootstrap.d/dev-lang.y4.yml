@@ -73,7 +73,6 @@ tools:
 packages:
   - name: python
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     from_source: python
     tools_required:
       - cross-toolchain
