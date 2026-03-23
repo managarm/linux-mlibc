@@ -262,7 +262,6 @@ packages:
 
   - name: qtlanguageserver6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 LSP library
       description: This package provides the Qt6 LSP (Language Server Protocol) library, giving Qt6 support for LSP.
@@ -273,8 +272,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
