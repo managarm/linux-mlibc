@@ -30,5 +30,6 @@ systemd-coredump:x:79:
 uuidd:x:80:
 systemd-oom:x:81:
 wheel:x:97:
+seat:x:202:
 users:x:999:
 nogroup:x:65534:
