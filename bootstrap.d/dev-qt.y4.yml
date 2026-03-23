@@ -43,7 +43,6 @@ tools:
 packages:
   - name: qtbase6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 base libraries
       description: This package provides the Qt6 base libraries, including QtCore, QtGui, QtWidgets and QtNetwork.
@@ -54,15 +53,16 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-cmake
       - cross-qt6
       - cross-toolchain
     pkgs_required:
       - mlibc
-      # - brotli
+      - at-spi2-core
+      - brotli
       - dbus
       - double-conversion
       - fontconfig
@@ -92,6 +92,7 @@ packages:
       - sqlite
       - wayland
       - wayland-protocols
+      - xcb-util-cursor
       - xcb-util-image
       - xcb-util-keysyms
       - xcb-util-render-util
@@ -104,6 +105,9 @@ packages:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/cross-qt6'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
+        - '-DQT_NO_GENERATE_QMAKE_WRAPPER_FOR_TARGET=ON'
+        - '-DBUILD_WITH_PCH=OFF'
         - '-DCMAKE_INSTALL_PREFIX=@THIS_COLLECT_DIR@/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -123,37 +127,42 @@ packages:
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DQT_BUILD_EXAMPLES=OFF'
         - '-DQT_BUILD_TESTS=OFF'
-        - '-DFEATURE_concurrent=ON'
-        - '-DFEATURE_dbus=OFF'
-        - '-DFEATURE_gui=ON'
-        - '-DFEATURE_network=ON'
-        - '-DFEATURE_printsupport=ON'
-        - '-DFEATURE_sql=ON'
-        - '-DFEATURE_testlib=ON'
-        - '-DFEATURE_widgets=ON'
-        - '-DFEATURE_libudev=ON'
-        - '-DFEATURE_icu=ON'
-        - '-DFEATURE_glib=ON'
-        - '-DFEATURE_pcre2=ON'
-        - '-DFEATURE_xml=ON'
-        - '-DFEATURE_harfbuzz=ON'
-        - '-DFEATURE_xkbcommon=ON'
-        - '-DFEATURE_xkbcommon_x11=ON'
-        - '-DFEATURE_libinput=ON'
-        - '-DFEATURE_evdev=ON'
-        - '-DFEATURE_mtdev=ON'
-        - '-DFEATURE_egl=ON'
-        - '-DFEATURE_opengl=ON'
-        - '-DFEATURE_accessibility=OFF'
-        - '-DFEATURE_xlib=ON'
-        - '-DFEATURE_xcb=ON'
-        - '-DFEATURE_xcb_xlib=ON'
-        - '-DFEATURE_eglfs_gbm=ON'
-        - '-DFEATURE_eglfs_egldevice=ON'
-        - '-DFEATURE_gtk3=OFF'
-        - '-DFEATURE_system_sqlite=ON'
-        - '-DFEATURE_cups=OFF'
-        - '-DFEATURE_ssl=ON'
+        - '-DQT_FEATURE_concurrent=ON'
+        - '-DQT_FEATURE_dbus=ON'
+        - '-DQT_FEATURE_gui=ON'
+        - '-DQT_FEATURE_network=ON'
+        - '-DQT_FEATURE_printsupport=ON'
+        - '-DQT_FEATURE_sql=ON'
+        - '-DQT_FEATURE_testlib=ON'
+        - '-DQT_FEATURE_widgets=ON'
+        - '-DQT_FEATURE_wayland=ON'
+        - '-DQT_FEATURE_vulkan=OFF'
+        - '-DQT_FEATURE_libudev=ON'
+        - '-DQT_FEATURE_icu=ON'
+        - '-DQT_FEATURE_glib=ON'
+        - '-DQT_FEATURE_pcre2=ON'
+        - '-DQT_FEATURE_xml=ON'
+        - '-DQT_FEATURE_harfbuzz=ON'
+        - '-DQT_FEATURE_xkbcommon=ON'
+        - '-DQT_FEATURE_xkbcommon_x11=ON'
+        - '-DQT_FEATURE_libinput=ON'
+        - '-DQT_FEATURE_evdev=ON'
+        - '-DQT_FEATURE_mtdev=ON'
+        - '-DQT_FEATURE_egl=ON'
+        - '-DQT_FEATURE_opengl=ON'
+        - '-DQT_FEATURE_accessibility=ON'
+        - '-DQT_FEATURE_xlib=ON'
+        - '-DQT_FEATURE_xcb=ON'
+        - '-DQT_FEATURE_xcb_xlib=ON'
+        - '-DQT_FEATURE_eglfs_gbm=ON'
+        - '-DQT_FEATURE_eglfs_egldevice=ON'
+        - '-DQT_FEATURE_gtk3=OFF'
+        - '-DQT_FEATURE_system_sqlite=ON'
+        - '-DQT_FEATURE_cups=OFF'
+        - '-DQT_FEATURE_ssl=ON'
+        - '-DQT_FEATURE_jemalloc=OFF'
+        - '-DQT_FEATURE_androiddeployqt=OFF'
+        - '-DQT_UNITY_BUILD=ON'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -161,10 +170,6 @@ packages:
     build:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
       - args: ['cmake', '--install', '.']
-      # Touch a file in empty directories to keep xbps happy
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/QtBuildInternals/QtStandaloneTestTemplateProject/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/macos/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/ios/.keep']
 
   - name: qtdeclarative6
     architecture: '@OPTION:arch@'
