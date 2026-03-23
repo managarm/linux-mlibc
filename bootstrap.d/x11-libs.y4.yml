@@ -327,12 +327,11 @@ packages:
 
   - name: libsm
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
-      tag: 'libSM-1.2.3'
-      version: '1.2.3'
+      tag: 'libSM-1.2.6'
+      version: '1.2.6'
       tools_required:
         - cross-toolchain
         - host-xorg-macros
