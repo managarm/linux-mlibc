@@ -5,6 +5,12 @@ sources:
     tag: 'v6.24.0'
     version: '6.24.0'
 
+  - name: kconfig
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kconfig.git'
+    tag: 'v6.24.0'
+    version: '6.24.0'
+
 tools:
   - name: host-ecm
     architecture: noarch
@@ -21,3 +27,81 @@ tools:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
     install:
       - args: ['cmake', '--install', '.']
+
+  - name: host-kconfig
+    architecture: noarch
+    from_source: kconfig
+    tools_required:
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - host-ninja
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+packages:
+  - name: kconfig
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for reading and writing configuration
+      description: This package provides a framework for reading and writing configuration.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kconfig
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=/usr/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
