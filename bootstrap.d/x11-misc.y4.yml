@@ -30,7 +30,6 @@ tools:
 packages:
   - name: shared-mime-info
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
@@ -64,11 +63,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-    # xbps broke?
-    # scripts:
-    #     post_install:
-    #       - args: 'echo "Running update-mime-database; this may take a minute or 2..."'
-    #       - args: '/usr/bin/update-mime-database /usr/share/mime/'
+    scripts:
+        post_install:
+          - args: 'echo "Running update-mime-database; this may take a minute or 2..."'
+          - args: '/usr/bin/update-mime-database /usr/share/mime/'
 
   - name: xkeyboard-config
     architecture: '@OPTION:arch@'

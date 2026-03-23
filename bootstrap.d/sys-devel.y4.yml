@@ -578,19 +578,22 @@ packages:
 
   - name: make
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/make.git'
-      tag: '4.2'
-      version: '4.2'
+      tag: '4.4.1'
+      version: '4.4.1'
+      sources_required:
+        - gnulib
       tools_required:
         - cross-pkg-config
-        - cross-autoconf-v2.69
-        - cross-automake-v1.15
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
         - cross-libtool
+        - cross-autoconf-archive
       regenerate:
-        - args: ['autoreconf', '-fvi']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
     tools_required:
       - cross-toolchain
     pkgs_required:

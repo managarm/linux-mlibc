@@ -1,0 +1,25 @@
+From 209c85141e8b90ca44c139c3d335f7c3001246ac Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 23 Mar 2026 19:04:56 +0100
+Subject: [PATCH] Update gnulib
+
+---
+ bootstrap.conf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bootstrap.conf b/bootstrap.conf
+index f8e640b..94e8519 100644
+--- a/bootstrap.conf
++++ b/bootstrap.conf
+@@ -19,7 +19,7 @@
+ checkout_only_file=README.git
+ 
+ # Choose a specific version of gnulib, when checking out
+-GNULIB_REVISION=stable-202301
++GNULIB_REVISION=5e1283bb13d74c6619afb71c6a322c648a8cc91e
+ 
+ # Always copy files rather than symlink
+ copy=true
+-- 
+2.53.0
+
