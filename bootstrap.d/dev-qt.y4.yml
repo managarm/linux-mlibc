@@ -7,7 +7,8 @@ sources:
     version: '6.11.0'
     regenerate:
       # Get the submodules that we'll need as a host tool
-      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech']
+      - args: ['git', 'remote', 'set-url', 'origin', 'https://code.qt.io/qt/qt5.git']
+      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech,qtlocation']
         isolate_network: false
 
 tools:
@@ -18,7 +19,7 @@ tools:
     tools_required:
       - cross-cmake
       - wayland-scanner
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
