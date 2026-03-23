@@ -299,7 +299,6 @@ packages:
 
   - name: qtmultimedia6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 multimedia library
       description: This package provides the Qt6 multimedia library, containing support for multimedia (audio, video, radio and camera's) in Qt6.
@@ -310,8 +309,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
@@ -333,9 +332,9 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
-        - '-DFEATURE_gstreamer=ON'
-        - '-DFEATURE_alsa=OFF'
-        - '-DFEATURE_pulseaudio=OFF'
+        - '-DQT_DFEATURE_gstreamer=ON'
+        - '-DQT_DFEATURE_alsa=OFF'
+        - '-DQT_DFEATURE_pulseaudio=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
