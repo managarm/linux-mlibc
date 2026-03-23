@@ -110,7 +110,6 @@ tools:
 
   - name: host-glib
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     exports_aclocal: true
     from_source: glib
     revision: 1
@@ -120,6 +119,8 @@ tools:
         - 'setup'
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
+        - '-Dinstalled_tests=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     compile:
