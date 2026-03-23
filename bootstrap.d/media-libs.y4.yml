@@ -1,19 +1,18 @@
 packages:
   - name: alsa-lib
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
-      summary: alsa-lib
-      description: Placeholder
+      summary: Advanced Linux Sound Architecture Library
+      description: This package contains the ALSA library used by programs (including ALSA Utilities) requiring access to the ALSA sound interface.
       spdx: 'LGPL-2.1-only'
       website: 'https://alsa-project.org/wiki/Main_Page'
-      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/alsa-project/alsa-lib.git'
-      tag: 'v1.2.6.1'
-      version: '1.2.6.1'
+      tag: 'v1.2.15.3'
+      version: '1.2.15.3'
       tools_required:
         - cross-toolchain
       regenerate:
