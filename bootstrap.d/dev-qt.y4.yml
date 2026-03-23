@@ -386,7 +386,6 @@ packages:
 
   - name: qtsvg6
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: The Qt6 SVG library
       description: This package provides the Qt6 SVG library, giving Qt6 SVG support.
@@ -397,8 +396,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - cross-toolchain
       - cross-cmake
