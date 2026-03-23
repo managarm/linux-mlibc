@@ -896,7 +896,6 @@ packages:
 
   - name: libwebp
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: A lossy image compression format
       description: This package contains a library and support programs to encode and decode images in WebP format.
@@ -907,8 +906,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/webmproject/libwebp.git'
-      tag: 'v1.2.2'
-      version: '1.2.2'
+      tag: 'v1.6.0'
+      version: '1.6.0'
       tools_required:
         - cross-toolchain
       regenerate:
