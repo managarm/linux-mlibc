@@ -5,6 +5,12 @@ sources:
     tag: 'v4.2.1'
     version: '4.2.1'
 
+  - name: ninja
+    subdir: ports
+    git: 'https://github.com/ninja-build/ninja.git'
+    tag: 'v1.13.2'
+    version: '1.13.2'
+
 tools:
   - name: cross-cmake
     architecture: '@OPTION:arch@'
@@ -15,6 +21,23 @@ tools:
         - '@THIS_SOURCE_DIR@/bootstrap'
         - '--prefix=@PREFIX@'
         - '--parallel=@PARALLELISM@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+  - name: host-ninja
+    architecture: noarch
+    from_source: ninja
+    tools_required:
+      - cross-cmake
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DBUILD_TESTING=OFF'
+        - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
