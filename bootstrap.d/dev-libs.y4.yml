@@ -1508,7 +1508,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1521,7 +1521,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Ddtd_validation=false'
         - '-Ddocumentation=false'
-        - '-Dscanner=false'
+        - '-Dscanner=true'
         - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         environ:
