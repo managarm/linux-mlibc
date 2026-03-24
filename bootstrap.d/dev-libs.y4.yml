@@ -614,7 +614,6 @@ packages:
 
   - name: libgcrypt
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: General purpose crypto library based on the code used in GnuPG
       description: This package contains a general purpose crypto library based on the code used in GnuPG. The library provides a high level interface to cryptographic building blocks using an extendable and flexible API.
@@ -625,8 +624,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgcrypt.git'
-      tag: 'libgcrypt-1.9.4'
-      version: '1.9.4'
+      tag: 'libgcrypt-1.12.1'
+      version: '1.12.1'
       tools_required:
         - cross-toolchain
       regenerate:
