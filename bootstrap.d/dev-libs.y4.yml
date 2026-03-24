@@ -699,7 +699,6 @@ packages:
 
   - name: libgpg-error
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Contains error handling functions used by GnuPG software
       description: This package contains a library that defines common error values for all GnuPG components.
@@ -710,8 +709,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'
-      tag: 'libgpg-error-1.43'
-      version: '1.43'
+      tag: 'libgpg-error-1.59'
+      version: '1.59'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -723,15 +722,14 @@ packages:
       - mlibc
     revision: 1
     configure:
-      # libgpg-error does not know about managarm, teach it
-      - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
-          '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.managarm.h']
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-doc'
+        - '--enable-threads'
+        - '--enable-install-gpg-error-config'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
