@@ -38,6 +38,12 @@ sources:
     tag: 'NSS_3_121_RTM'
     version: '3.121.RTM'
 
+  - name: plasma-wayland-protocols
+    subdir: 'ports'
+    git: 'https://github.com/KDE/plasma-wayland-protocols.git'
+    tag: 'v1.20.0'
+    version: '1.20.0'
+
   - name: wayland
     subdir: 'ports'
     url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.25.0/downloads/wayland-1.25.0.tar.xz'
@@ -166,6 +172,28 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+
+  - name: host-plasma-wayland-protocols
+    architecture: noarch
+    from_source: plasma-wayland-protocols
+    tools_required:
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - host-ninja
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DBUILD_TESTING=OFF'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
 
   - name: wayland-scanner
     # labels: [aarch64]
@@ -1621,11 +1649,7 @@ packages:
       website: 'https://invent.kde.org/libraries/plasma-wayland-protocols'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/KDE/plasma-wayland-protocols.git'
-      tag: 'v1.20.0'
-      version: '1.20.0'
+    from_source: plasma-wayland-protocols
     tools_required:
       - cross-toolchain
       - wayland-scanner
