@@ -374,6 +374,57 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-kcmutils
+    architecture: noarch
+    from_source: kcmutils
+    tools_required:
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - host-ninja
+      - host-kbookmarks
+      - host-kcodecs
+      - host-kcolorscheme
+      - host-kcompletion
+      - host-kconfig
+      - host-kcoreaddons
+      - host-kconfigwidgets
+      - host-kguiaddons
+      - host-ki18n
+      - host-kio
+      - host-kirigami
+      - host-kitemviews
+      - host-kjobwidgets
+      - host-kservice
+      - host-kwidgetsaddons
+      - host-kwindowsystem
+      - host-kxmlgui
+      - host-solid
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        - '-DKDE_INSTALL_QTPLUGINDIR=@PREFIX@/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-kcodecs
     architecture: noarch
     from_source: kcodecs
