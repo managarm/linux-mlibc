@@ -236,6 +236,7 @@ tools:
       - cross-qt6
       - host-ecm
       - host-ninja
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -265,6 +266,7 @@ tools:
     from_source: extra-cmake-modules
     tools_required:
       - cross-cmake
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -276,6 +278,36 @@ tools:
     install:
       - args: ['cmake', '--install', '.']
 
+  - name: host-karchive
+    architecture: noarch
+    from_source: karchive
+    tools_required:
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - host-ninja
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-kconfig
     architecture: noarch
     from_source: kconfig
@@ -284,6 +316,7 @@ tools:
       - cross-qt6
       - host-ecm
       - host-ninja
+    revision: 1
     configure:
       - args:
         - 'cmake'
