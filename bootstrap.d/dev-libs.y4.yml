@@ -60,6 +60,14 @@ sources:
     tag: '1.18.0'
     version: '1.18.0'
 
+  - name: wayland-protocols
+    subdir: 'ports'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.47/downloads/wayland-protocols-1.47.tar.xz'
+    checksum: 'blake2b:2b6fcd847016ccd0a8fb5e47a6429274a34ce414948f02da0d56d51855dc732c56c8266be38388deacb6af6491146da0049f6e003cec823a1d362bd2f429e678'
+    extract_path: 'wayland-protocols-1.47'
+    format: 'tar.xz'
+    version: '1.47'
+
 tools:
   - name: cross-wayland
     labels: [aarch64]
@@ -90,11 +98,7 @@ tools:
 
   - name: cross-wayland-protocols
     architecture: 'noarch'
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/wayland/wayland-protocols.git'
-      tag: '1.27'
-      version: '1.27'
+    from_source: wayland-protocols
     tools_required:
       - cross-toolchain
       - wayland-scanner
@@ -109,6 +113,8 @@ tools:
         - '--buildtype=release'
         - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/tools/wayland-scanner/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig'
     compile:
       - args: ['ninja']
     install:
@@ -1728,13 +1734,7 @@ packages:
       website: 'https://wayland.freedesktop.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.47/downloads/wayland-protocols-1.47.tar.xz'
-      checksum: 'blake2b:2b6fcd847016ccd0a8fb5e47a6429274a34ce414948f02da0d56d51855dc732c56c8266be38388deacb6af6491146da0049f6e003cec823a1d362bd2f429e678'
-      extract_path: 'wayland-protocols-1.47'
-      format: 'tar.xz'
-      version: '1.47'
+    from_source: wayland-protocols
     tools_required:
       - cross-toolchain
       - wayland-scanner
