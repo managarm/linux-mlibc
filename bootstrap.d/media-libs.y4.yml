@@ -534,8 +534,6 @@ packages:
 
   - name: lcms
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
-    architecture: '@OPTION:arch@'
     metadata:
       summary: A lightweight, speed optimized color management engine
       description: The Little Color Management System is a small-footprint color management engine, with special focus on accuracy and performance. It uses the International Color Consortium standard (ICC), which is the modern standard for color management.
@@ -546,8 +544,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/mm2/Little-CMS.git'
-      tag: 'lcms2.13.1'
-      version: '2.13.1'
+      tag: 'lcms2.18'
+      version: '2.18'
       tools_required:
         - cross-toolchain
       regenerate:

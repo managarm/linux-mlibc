@@ -38,6 +38,12 @@ sources:
     tag: 'NSS_3_121_RTM'
     version: '3.121.RTM'
 
+  - name: plasma-wayland-protocols
+    subdir: 'ports'
+    git: 'https://github.com/KDE/plasma-wayland-protocols.git'
+    tag: 'v1.20.0'
+    version: '1.20.0'
+
   - name: wayland
     subdir: 'ports'
     url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.25.0/downloads/wayland-1.25.0.tar.xz'
@@ -53,6 +59,14 @@ sources:
     git: 'https://gitlab.freedesktop.org/wayland/wayland.git'
     tag: '1.18.0'
     version: '1.18.0'
+
+  - name: wayland-protocols
+    subdir: 'ports'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.47/downloads/wayland-protocols-1.47.tar.xz'
+    checksum: 'blake2b:2b6fcd847016ccd0a8fb5e47a6429274a34ce414948f02da0d56d51855dc732c56c8266be38388deacb6af6491146da0049f6e003cec823a1d362bd2f429e678'
+    extract_path: 'wayland-protocols-1.47'
+    format: 'tar.xz'
+    version: '1.47'
 
 tools:
   - name: cross-wayland
@@ -84,11 +98,7 @@ tools:
 
   - name: cross-wayland-protocols
     architecture: 'noarch'
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/wayland/wayland-protocols.git'
-      tag: '1.27'
-      version: '1.27'
+    from_source: wayland-protocols
     tools_required:
       - cross-toolchain
       - wayland-scanner
@@ -103,6 +113,8 @@ tools:
         - '--buildtype=release'
         - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/tools/wayland-scanner/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig'
     compile:
       - args: ['ninja']
     install:
@@ -166,6 +178,28 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+
+  - name: host-plasma-wayland-protocols
+    architecture: noarch
+    from_source: plasma-wayland-protocols
+    tools_required:
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - host-ninja
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DBUILD_TESTING=OFF'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
 
   - name: wayland-scanner
     # labels: [aarch64]
@@ -503,6 +537,50 @@ packages:
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libei
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for Emulated Input, primarily aimed at the Wayland stack
+      description: This package contains a set of libraries for handling emulated inputs. It is primarily aimed at the Wayland stack.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/libinput/libei'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/libinput/libei.git'
+      tag: '1.5.0'
+      version: '1.5.0'
+    tools_required:
+      - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libevdev
+      - libxkbcommon
+      - systemd
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dliboeffis=enabled'
+        - '-Dsd-bus-provider=libsystemd'
+        - '-Dtests=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1621,11 +1699,7 @@ packages:
       website: 'https://invent.kde.org/libraries/plasma-wayland-protocols'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/KDE/plasma-wayland-protocols.git'
-      tag: 'v1.20.0'
-      version: '1.20.0'
+    from_source: plasma-wayland-protocols
     tools_required:
       - cross-toolchain
       - wayland-scanner
@@ -1643,6 +1717,54 @@ packages:
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
         - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: qcoro
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C++ Coroutine Library for Qt
+      description: This package provides a C++ Coroutine Library for Qt.
+      spdx: 'MIT'
+      website: 'https://qcoro.dvratil.cz/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/qcoro/qcoro.git'
+      tag: 'v0.13.0'
+      version: '0.13.0'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/cross-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DUSE_QT_VERSION=6'
+        - '-DQCORO_BUILD_EXAMPLES=OFF'
+        - '-DQCORO_WITH_QTDBUS=ON'
+        - '-DQCORO_WITH_QTNETWORK=ON'
+        - '-DQCORO_WITH_QML=ON'
+        - '-DQCORO_WITH_QTQUICK=ON'
+        - '-DQCORO_WITH_QTTEST=ON'
+        - '-DBUILD_TESTING=OFF'
+        - '-DQCORO_WITH_QTWEBSOCKETS=OFF'
+        - '-DBUILD_SHARED_LIBS=ON'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1704,13 +1826,7 @@ packages:
       website: 'https://wayland.freedesktop.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.47/downloads/wayland-protocols-1.47.tar.xz'
-      checksum: 'blake2b:2b6fcd847016ccd0a8fb5e47a6429274a34ce414948f02da0d56d51855dc732c56c8266be38388deacb6af6491146da0049f6e003cec823a1d362bd2f429e678'
-      extract_path: 'wayland-protocols-1.47'
-      format: 'tar.xz'
-      version: '1.47'
+    from_source: wayland-protocols
     tools_required:
       - cross-toolchain
       - wayland-scanner

@@ -1,0 +1,636 @@
+packages:
+  - name: kdecoration
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Plugin based library to create window decorations
+      description: This package provides a plugin based library to create window decorations.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/kdecoration.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - ki18n
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kglobalacceld
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Daemon providing Global Keyboard Shortcut (Accelerator) functionality
+      description: This package provides a daemon for Global Keyboard Shortcut (Accelerator) functionality.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/kglobalacceld.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kcoreaddons
+      - kcrash
+      - kdbusaddons
+      - kio
+      - kjobwidgets
+      - knotifications
+      - kservice
+      - kwindowsystem
+      - libxcb
+      - qtbase6
+      - xcb-util-keysyms
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DWITH_X11=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: knighttime
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Helpers for scheduling the dark-light cycle
+      description: This package provides helpers for scheduling the dark-light cycle.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/knighttime.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - host-kconfig
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kcoreaddons
+      - kdbusaddons
+      - kholidays
+      - ki18n
+      - qtbase6
+      - qtpositioning6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kscreenlocker
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library and components for secure lock screen architecture
+      description: This package provides a library and components for secure lock screen architecture.
+      spdx: 'GPL-2.0-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/kscreenlocker.git'
+      tag: 'v6.3.6'
+      version: '6.3.6'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+      - host-kconfig
+      - host-kcmutils
+      - host-kpackage
+    pkgs_required:
+      - mlibc
+      - kcmutils
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kcrash
+      - kglobalaccel
+      - ki18n
+      - kidletime
+      - kio
+      - kirigami
+      - knotifications
+      - ksvg
+      - kwindowsystem
+      - layer-shell-qt
+      - libkscreen
+      - libplasma
+      - libx11
+      - libxcb
+      - libxi
+      - pam
+      - solid
+      - wayland
+      - qtbase6
+      - qtdeclarative6
+      - xcb-util-keysyms
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kcmutils/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kpackage/lib/x86_64-linux-gnu/cmake/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam/system-local-login', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam/kde-fingerprint', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam/kde', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam/kde-smartcard', '@THIS_COLLECT_DIR@/etc/pam.d/']
+
+  - name: kwayland
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt-style API to interact with the wayland-client API
+      description: This package provides a Qt-style API to interact with the wayland-client API.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://invent.kde.org/frameworks/kwayland'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/kwayland.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - libglvnd
+      - plasma-wayland-protocols
+      - wayland
+      - wayland-protocols
+      - qtbase6
+      - qtwayland6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kwin
+    architecture: '@OPTION:arch@'
+    metadata:
+      # summary: Qt component to allow applications make use of Wayland wl-layer-shell protocol
+      # description: This package provides a Qt component to allow applications make use of Wayland wl-layer-shell protocol.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/kwin.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+      - host-kconfig
+      - host-kcmutils
+      - host-kpackage
+    pkgs_required:
+      - mlibc
+      - hwdata
+      - kauth
+      - kcmutils
+      - kcolorscheme
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kcrash
+      - kdbusaddons
+      - kdeclarative
+      - kdecoration
+      - kglobalaccel
+      - kglobalacceld
+      - kguiaddons
+      - ki18n
+      - kidletime
+      - knighttime
+      - kpackage
+      - kservice
+      - ksvg
+      - kwayland
+      - kwidgetsaddons
+      - kwindowsystem
+      - knewstuff
+      - kxmlgui
+      - lcms
+      - libdisplay-info
+      - libdrm
+      - libei
+      - libinput
+      - libplasma
+      - libxcvt
+      - plasma-activities
+      - qt5compat
+      - qtbase6
+      - qtdeclarative6
+      - qtsensors6
+      - qtshadertools6
+      - qtsvg6
+      - qttools6
+      - qtwayland6
+      - xwayland
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        # - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-qt6'
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kcmutils/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kpackage/lib/x86_64-linux-gnu/cmake/'
+        - '-DKWIN_BUILD_SCREENLOCKER=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: layer-shell-qt
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt component to allow applications make use of Wayland wl-layer-shell protocol
+      description: This package provides a Qt component to allow applications make use of Wayland wl-layer-shell protocol.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/layer-shell-qt.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - libxkbcommon
+      - qtbase6
+      - qtdeclarative6
+      - qtwayland6
+      - wayland
+      - wayland-protocols
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libkscreen
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Plasma screen management library
+      description: This package provides the Plasma screen management library.
+      spdx: 'GPL-2.0-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/libkscreen.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - libxcb
+      - plasma-wayland-protocols
+      - qtbase6
+      - qttools6
+      - qtwayland6
+      - wayland
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libplasma
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Plasma library and runtime components based upon KF6 and Qt6
+      description: This package provides the Plasma library and runtime components based upon KF6 and Qt6.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/libplasma.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+      - host-kconfig
+      - host-kcmutils
+      - host-kpackage
+    pkgs_required:
+      - mlibc
+      - karchive
+      - kcmutils
+      - kconfig
+      - kcoreaddons
+      - kglobalaccel
+      - kguiaddons
+      - ki18n
+      - kiconthemes
+      - kio
+      - kirigami
+      - knotifications
+      - kpackage
+      - ksvg
+      - kwidgetsaddons
+      - kwindowsystem
+      - libglvnd
+      - libx11
+      - libxcb
+      - plasma-activities
+      - plasma-wayland-protocols
+      - qtbase6
+      - qtdeclarative6
+      - qtsvg6
+      - qtwayland6
+      - wayland
+      - wayland-protocols
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kcmutils/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kpackage/lib/x86_64-linux-gnu/cmake/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: plasma-activities
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Core components for KDE's Activities System
+      description: This package provides the core components for KDE's Activities System.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/plasma-activities.git'
+      tag: 'v6.6.3'
+      version: '6.6.3'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kcoreaddons
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
