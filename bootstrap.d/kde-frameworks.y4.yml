@@ -1183,6 +1183,7 @@ tools:
       - cross-wayland-protocols
       - host-ecm
       - host-ninja
+      - wayland-scanner
     revision: 1
     configure:
       - args:
