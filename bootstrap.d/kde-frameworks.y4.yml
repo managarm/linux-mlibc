@@ -419,8 +419,10 @@ tools:
       - host-kconfig
       - host-kcoreaddons
       - host-kconfigwidgets
+      - host-kglobalaccel
       - host-kguiaddons
       - host-ki18n
+      - host-kiconthemes
       - host-kio
       - host-kirigami
       - host-kitemviews
