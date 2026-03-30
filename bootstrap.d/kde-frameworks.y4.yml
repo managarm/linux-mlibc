@@ -410,8 +410,10 @@ tools:
     tools_required:
       - cross-cmake
       - cross-qt6
+      - host-breeze-icons
       - host-ecm
       - host-ninja
+      - host-karchive
       - host-kbookmarks
       - host-kcodecs
       - host-kcolorscheme
