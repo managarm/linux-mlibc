@@ -29,7 +29,13 @@ packages:
 
   - name: qrencode
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: C library for encoding data in a QR Code symbol
+      description: This package provides a library and command-line tool for encoding data in QR Code format.
+      spdx: 'LGPL-2.0-only'
+      website: 'https://fukuchi.org/en/works/qrencode/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-gfx']
     source:
       subdir: ports
       git: https://github.com/fukuchi/libqrencode
