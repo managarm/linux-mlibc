@@ -179,6 +179,12 @@ sources:
     tag: 'v6.24.0'
     version: '6.24.0'
 
+  - name: knotifyconfig
+    subdir: 'ports'
+    git: 'https://github.com/KDE/knotifyconfig.git'
+    tag: 'v6.24.0'
+    version: '6.24.0'
+
   - name: kpackage
     subdir: 'ports'
     git: 'https://github.com/KDE/kpackage.git'
@@ -203,6 +209,12 @@ sources:
     tag: 'v6.24.0'
     version: '6.24.0'
 
+  - name: kstatusnotifieritem
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kstatusnotifieritem.git'
+    tag: 'v6.24.0'
+    version: '6.24.0'
+
   - name: ksvg
     subdir: 'ports'
     git: 'https://github.com/KDE/ksvg.git'
@@ -221,6 +233,12 @@ sources:
     tag: 'v6.24.0'
     version: '6.24.0'
 
+  - name: kunitconversion
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kunitconversion.git'
+    tag: 'v6.24.0'
+    version: '6.24.0'
+
   - name: kwidgetsaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kwidgetsaddons.git'
@@ -236,6 +254,12 @@ sources:
   - name: kxmlgui
     subdir: 'ports'
     git: 'https://github.com/KDE/kxmlgui.git'
+    tag: 'v6.24.0'
+    version: '6.24.0'
+
+  - name: prison
+    subdir: 'ports'
+    git: 'https://github.com/KDE/prison.git'
     tag: 'v6.24.0'
     version: '6.24.0'
 
@@ -2731,6 +2755,55 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: knotifyconfig
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for configuring desktop notifications
+      description: This package provides a framework for configuring desktop notifications.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: knotifyconfig
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - kcompletion
+      - kconfig
+      - ki18n
+      - kio
+      - libcanberra
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: kpackage
     architecture: '@OPTION:arch@'
     metadata:
@@ -2928,6 +3001,52 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: kstatusnotifieritem
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Implementation of Status Notifier Items
+      description: This package provides an implementation of Status Notifier Items.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kstatusnotifieritem
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - kwindowsystem
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_PYTHON_BINDINGS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: ksvg
     architecture: '@OPTION:arch@'
     metadata:
@@ -3093,6 +3212,49 @@ packages:
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DWITH_TEXT_TO_SPEECH=FALSE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kunitconversion
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Unit conversion library for the Qt6 framework
+      description: This package provides a unit conversion library for the Qt6 framework.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kunitconversion
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - ki18n
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_PYTHON_BINDINGS=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -3314,6 +3476,56 @@ packages:
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # Were porting, and this is the recommended way to do it.
         - '-DBUILD_PYTHON_BINDINGS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: prison
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: QRCode and data matrix barcode library
+      description: This package provides a QRCode and data matrix barcode library.
+      spdx: 'GPL-2.0-only'
+      website: 'https://invent.kde.org/frameworks/prison'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: prison
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - libdmtx
+      - qrencode
+      - qtbase6
+      - qtdeclarative6
+      - qtmultimedia6
+      - zxing-cpp
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_EXAMPLES=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
