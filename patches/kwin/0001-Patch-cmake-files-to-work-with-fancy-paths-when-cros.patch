@@ -1,0 +1,28 @@
+From de4cfb5e5f8a9745852f9451fc191dbd82efc7d5 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 30 Mar 2026 20:28:41 +0200
+Subject: [PATCH] Patch cmake files to work with fancy paths when
+ cross-compiling
+
+---
+ src/wayland/tools/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/wayland/tools/CMakeLists.txt b/src/wayland/tools/CMakeLists.txt
+index ff75893..4b21677 100644
+--- a/src/wayland/tools/CMakeLists.txt
++++ b/src/wayland/tools/CMakeLists.txt
+@@ -21,8 +21,8 @@ elseif(CMAKE_CROSSCOMPILING)
+     # search native tooling prefix
+     set(NATIVE_PREFIX "" CACHE STRING "CMAKE_PREFIX_PATH for native Qt libraries")
+     if (NOT NATIVE_PREFIX)
+-        string(FIND ${KF6_HOST_TOOLING} /lib idx)
+-        string(SUBSTRING ${KF6_HOST_TOOLING} 0 ${idx} NATIVE_PREFIX)
++        string(FIND "${KF6_HOST_TOOLING}" /lib idx)
++        string(SUBSTRING "${KF6_HOST_TOOLING}" 0 ${idx} NATIVE_PREFIX)
+     endif()
+     message(STATUS "Building qtwaylandscanner_kde against ${NATIVE_PREFIX}")
+ 
+-- 
+2.53.0
+
