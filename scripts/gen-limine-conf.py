@@ -73,8 +73,13 @@ def name_of_protocol(protocol):
 
 def make_default_entries(writer, *, protocol):
     writer.write_entry(
-        f"agetty (via {name_of_protocol(protocol)})",
+        f"Weston (via {name_of_protocol(protocol)})",
         protocol=protocol,
+    )
+    writer.write_entry(
+        f"SDDM (via {name_of_protocol(protocol)})",
+        protocol=protocol,
+        extra_cmdline="systemd.unit=sddm.target",
     )
 
 
