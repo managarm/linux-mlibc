@@ -1,0 +1,16 @@
+# Begin /etc/pam.d/sddm
+
+auth     requisite      pam_nologin.so
+auth     required       pam_env.so
+
+# Enable once we have users that arent root :)
+#auth     required       pam_succeed_if.so uid >= 1000 quiet
+auth     include        system-auth
+
+account  include        system-account
+password include        system-password
+
+session  required       pam_limits.so
+session  include        system-session
+
+# End /etc/pam.d/sddm
