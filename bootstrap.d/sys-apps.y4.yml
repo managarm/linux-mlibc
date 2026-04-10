@@ -940,7 +940,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -1018,7 +1018,7 @@ packages:
         - '-Dutmp=true'
         - '-Dvconsole=false'
         - '-Dwheel-group=false'
-        - '-Dxdg-autostart=false'
+        - '-Dxdg-autostart=true'
         - '-Dxkbcommon=disabled'
         - '-Dxz=disabled'
         - '-Dzlib=disabled'
