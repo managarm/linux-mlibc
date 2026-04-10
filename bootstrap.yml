@@ -212,7 +212,7 @@ packages:
       subdir: meta-sources
       version: '1.0'
     default: true
-    revision: 3
+    revision: 4
     build:
       - args: |
           mkdir -pv @THIS_COLLECT_DIR@/usr/{,local/}{bin,include,lib,sbin,src}
