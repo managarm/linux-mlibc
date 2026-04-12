@@ -280,16 +280,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/boostorg/boost.git'
-      tag: 'boost-1.90.0'
+      url: 'https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-b2-nodocs.tar.gz'
+      format: 'tar.gz'
+      checksum: 'blake2b:b83844bfaa85edef6fa01b0f482329205b5498241aa3b56a2321943db027c97fd921a4682d540bce240e0eda26beab612d23b32669dd819b6aa7fc667e1253de'
+      extract_path: 'boost-1.90.0'
       version: '1.90.0'
-      regenerate:
-        - args: |
-            if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
-              git -C '@THIS_SOURCE_DIR@' remote add origin https://github.com/boostorg/boost.git
-            fi
-        - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
-          isolate_network: false
     tools_required:
       - cross-toolchain
     pkgs_required:

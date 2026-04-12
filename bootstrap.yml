@@ -207,7 +207,6 @@ tools:
 packages:
   - name: base-files
     architecture: '@OPTION:arch@'
-    implict_package: true
     source:
       subdir: meta-sources
       version: '1.0'
@@ -263,7 +262,6 @@ packages:
   - name: kernel-headers
     architecture: '@OPTION:arch@'
     from_source: linux
-    implict_package: true
     revision: 1
     configure:
       - args: ['rsync', '-ar', '@THIS_SOURCE_DIR@/', '@THIS_BUILD_DIR@/']
@@ -296,7 +294,6 @@ packages:
   - name: mlibc-headers
     architecture: '@OPTION:arch@'
     from_source: mlibc
-    implict_package: true
     pkgs_required:
       - kernel-headers
     revision: 1
@@ -323,7 +320,6 @@ packages:
     tools_required:
       - bootstrap-system-gcc
       - tool: cross-binutils
-    implict_package: true
     pkgs_required:
       - mlibc-headers
     revision: 1
