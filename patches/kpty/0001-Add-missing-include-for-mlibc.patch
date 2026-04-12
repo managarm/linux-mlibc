@@ -1,0 +1,28 @@
+From f158561d023fc6b2ec6f1dab43eaa24c7e05b6ef Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 12 Apr 2026 16:12:45 +0200
+Subject: [PATCH] Add missing include for mlibc
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/kpty.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/kpty.cpp b/src/kpty.cpp
+index c0d3905..2ae35c8 100644
+--- a/src/kpty.cpp
++++ b/src/kpty.cpp
+@@ -38,6 +38,10 @@
+ #include <time.h>
+ #include <unistd.h>
+ 
++#ifdef __mlibc__
++#include <paths.h>
++#endif
++
+ #if HAVE_PTY_H
+ #include <pty.h>
+ #endif
+-- 
+2.53.0
+
