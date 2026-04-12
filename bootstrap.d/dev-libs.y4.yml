@@ -268,6 +268,51 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: boost
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    metadata:
+      summary: Boost development headers and libraries
+      description: This package provides the Boost headers and libraries.
+      spdx: 'BSL-1.0'
+      website: 'https://boost.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/boostorg/boost.git'
+      tag: 'boost-1.90.0'
+      version: '1.90.0'
+      regenerate:
+        - args: |
+            if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
+              git -C '@THIS_SOURCE_DIR@' remote add origin https://github.com/boostorg/boost.git
+            fi
+        - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
+          isolate_network: false
+    tools_required:
+      - cross-toolchain
+    pkgs_required:
+      - mlibc
+      - bzip2
+      - icu
+      - libiconv
+      - python
+      - xz-utils
+      - zlib
+      - zstd
+    revision: 1
+    configure:
+      # boost does not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args: ['./bootstrap.sh', '--prefix=/usr', '--with-python=python3']
+    build:
+      - args: ['./b2', 'stage', 'toolset=gcc', 'threading=multi', 'link=shared', '--user-config=@SOURCE_ROOT@/extrafiles/user-config.jam', '--without-python']
+      - args: ['./b2', 'install', 'toolset=gcc', 'threading=multi', 'link=shared', '--user-config=@SOURCE_ROOT@/extrafiles/user-config.jam', '--without-python', '--prefix=@THIS_COLLECT_DIR@/usr']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR'
+
   - name: double-conversion
     architecture: '@OPTION:arch@'
     metadata:
@@ -537,6 +582,62 @@ packages:
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kirigami-addons
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Visual end user components for Kirigami-based applications
+      description: This package provides the visual end user components for Kirigami-based applications.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://invent.kde.org/libraries/kirigami-addons'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/KDE/kirigami-addons.git'
+      tag: 'v1.12.0'
+      version: '1.12.0'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - cross-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - kglobalaccel
+      - kguiaddons
+      - ki18n
+      - kirigami
+      - libplasma
+      - qtbase6
+      - qtdeclarative6
+      - qtmultimedia6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/cross-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_EXAMPLES=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']

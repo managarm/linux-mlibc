@@ -580,7 +580,7 @@ def do_qemu(args):
     if args.memory is not None:
         qemu_args += ["-m", args.memory]
 
-    qemu_args += ["-name", f"Managarm {args.arch}"]
+    qemu_args += ["-name", f"Linux-mlibc {args.arch}"]
     if args.sdl:
         qemu_args += ["-display", "sdl"]
     else:
