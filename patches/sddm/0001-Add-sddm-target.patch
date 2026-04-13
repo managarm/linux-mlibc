@@ -1,0 +1,27 @@
+From 538f1a4851154eaee47166b5c5d2cdeeb0f9fb2c Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sat, 6 Dec 2025 21:24:18 +0100
+Subject: [PATCH] Add sddm target
+
+---
+ sddm.target | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 sddm.target
+
+diff --git a/sddm.target b/sddm.target
+new file mode 100644
+index 0000000..9a88fe4
+--- /dev/null
++++ b/sddm.target
+@@ -0,0 +1,8 @@
++[Unit]
++Description=Graphical Interface (SDDM)
++Documentation=man:systemd.special(7)
++Requires=multi-user.target
++Wants=sddm.service
++Conflicts=rescue.service rescue.target
++After=multi-user.target rescue.service rescue.target sddm.service
++AllowIsolate=yes
+-- 
+2.51.0
+
