@@ -82,6 +82,43 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: desktop-file-utils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Command line utilities to work with desktop menu entries
+      description: This package contains command line utilities for working with Desktop entries. These utilities are used by Desktop Environments and other applications to manipulate the MIME-types application databases and help adhere to the Desktop Entry Specification.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://freedesktop.org/wiki/Software/desktop-file-utils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
+      tag: '0.26'
+      version: '0.26'
+      tools_required:
+        - cross-toolchain
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - cross-toolchain
+    pkgs_required:
+      - mlibc
+      - glib
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: dejagnu
     architecture: '@OPTION:arch@'
     stability_level: 'broken'
@@ -158,7 +195,7 @@ packages:
       - mlibc
       - libxml
       - python
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

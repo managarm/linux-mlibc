@@ -1,12 +1,11 @@
 packages:
   - name: curl
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_80_0'
-      version: '7.80.0'
+      tag: 'curl-8_21_0'
+      version: '8.21.0'
       tools_required:
         - cross-toolchain
         - cross-autoconf-archive
@@ -96,7 +95,7 @@ packages:
       - mlibc
       - pcre
       - openssl
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

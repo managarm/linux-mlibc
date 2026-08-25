@@ -31,7 +31,7 @@ packages:
       - libxkbcommon
       - mesa
       - wayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -158,7 +158,7 @@ packages:
       - libx11
       - libxkbfile
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

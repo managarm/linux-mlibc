@@ -1,0 +1,59 @@
+From 8b19332567d488d6303077035602a7e7326cfd2f Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 17 Dec 2024 21:14:37 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ data/meson.build     | 4 ++--
+ meson.build          | 4 +++-
+ src/as-system-info.c | 3 +++
+ 3 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/data/meson.build b/data/meson.build
+index 7ae7a9b..c724ef3 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -9,8 +9,8 @@ install_data('its/metainfo.loc',
+ 
+ # Do not rely on an exe wrapper for rel-info, use the system one in that case
+ if meson.is_cross_build()
+-    dependency('appstream', version: '>=' + as_version, native: true,
+-               not_found_message: 'Native appstream required for cross-building')
++#    dependency('appstream', version: '>=' + as_version, native: true,
++#               not_found_message: 'Native appstream required for cross-building')
+     ascli_exe = find_program('appstreamcli')
+ endif
+ 
+diff --git a/meson.build b/meson.build
+index 7e89ab0..862b868 100644
+--- a/meson.build
++++ b/meson.build
+@@ -226,7 +226,9 @@ subdir('tools/')
+ subdir('po/')
+ subdir('data/')
+ subdir('contrib/')
+-subdir('docs/')
++if get_option('docs')
++    subdir('docs/')
++endif
+ subdir('tests/')
+ if get_option('qt')
+     subdir('qt/')
+diff --git a/src/as-system-info.c b/src/as-system-info.c
+index 0c7e27c..abea658 100644
+--- a/src/as-system-info.c
++++ b/src/as-system-info.c
+@@ -519,6 +519,9 @@ as_get_physical_memory_total (void)
+ 	if (physpages > 0 && pagesize > 0)
+ 		return (physpages * pagesize) / MB_IN_BYTES;
+ 	return 0;
++#elif defined(__managarm__)
++	// HACK!
++	return 0;
+ #else
+ #error "Implementation of as_get_physical_memory_total() missing for this OS."
+ #endif
+-- 
+2.45.2
+

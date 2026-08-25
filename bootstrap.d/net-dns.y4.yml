@@ -1,7 +1,40 @@
 packages:
+  - name: c-ares
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C library that resolves names asynchronously
+      description: This package contains a C library for asynchronous DNS requests.
+      spdx: 'MIT'
+      website: 'https://c-ares.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-dns']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/c-ares/c-ares.git'
+      tag: 'v1.34.4'
+      version: '1.34.4'
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libidn2
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: An implementation of the IDNA2008 specifications (RFCs 5890, 5891, 5892, 5893)
       description: This package provides a library for internationalized string handling based on standards from the Internet Engineering Task Force (IETF)'s IDN working group, designed for internationalized domain names.
@@ -16,8 +49,11 @@ packages:
       version: '2.3.2'
       tools_required:
         - cross-toolchain
+      sources_required:
+        - gnulib
       regenerate:
-        - args: ['./bootstrap']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['autoreconf', '-fvi']
     tools_required:
       - cross-toolchain

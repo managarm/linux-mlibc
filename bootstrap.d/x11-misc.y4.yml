@@ -50,7 +50,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -101,7 +101,7 @@ packages:
       - glib
       - itstool
       - libxml
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -134,7 +134,7 @@ packages:
       - mlibc
       - libx11
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -158,7 +158,7 @@ packages:
     tools_required:
       - cross-toolchain
       - host-xorg-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

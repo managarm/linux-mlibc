@@ -1,9 +1,19 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
+  - name: appstream
+    subdir: 'ports'
+    git: 'https://github.com/ximion/appstream.git'
+    tag: 'v1.0.4'
+    version: '1.0.4'
+
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.82.4'
-    version: '2.82.4'
+    tag: '2.88.1'
+    version: '2.88.1'
 
   - name: gnulib
     subdir: ports
@@ -15,10 +25,8 @@ sources:
   - name: gobject-introspection
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
-    # New meson versions break old builds, but the fix isn't in a stable release yet
-    branch: 'main'
-    commit: '7368d58a2d615e7cade85afd3f88df65256b699f'
-    version: '1.70.0.glib1'
+    tag: '1.86.0'
+    version: '1.86.0'
 
   - name: icu
     subdir: 'ports'
@@ -120,6 +128,43 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-appstream
+    architecture: noarch
+    from_source: appstream
+    exports_aclocal: true
+    exports_shared_libs: true
+    tools_required:
+      - cross-pkg-config
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Dapidocs=false'
+        - '-Ddocs=false'
+        - '-Dcompose=false'
+        - '-Dmaintainer=false'
+        - '-Dstatic-analysis=false'
+        - '-Dstemming=false'
+        - '-Dvapi=false'
+        - '-Dapt-support=false'
+        - '-Dinstall-docs=false'
+        - '-Dgir=false'
+        - '-Dqt=false'
+        - '-Dsystemd=false'
+        - '-Ddocs=false'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-glib
     architecture: '@OPTION:arch@'
     exports_aclocal: true
@@ -141,12 +186,13 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-gobject-introspection
-    architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    architecture: noarch
     exports_aclocal: true
+    exports_shared_libs: true
     from_source: gobject-introspection
     tools_required:
-      - host-python
+      - tool: host-gpep517
+        recursive: true
       - host-glib
       - cross-pkg-config
       - virtual: pkgconfig-for-host
@@ -160,11 +206,15 @@ tools:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '-Dbuild_introspection_data=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     compile:
       - args: ['ninja']
     install:
       - args: ['ninja', 'install']
+      - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/ldd-wrapper', '@PREFIX@/bin/']
+      - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/run-wrapper', '@PREFIX@/bin/']
 
   - name: host-icu
     architecture: '@OPTION:arch@'
@@ -228,6 +278,58 @@ tools:
       - args: ['ninja', 'install']
 
 packages:
+  - name: appstream
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Cross-distro effort for providing metadata for software in the Linux ecosystem
+      description: This package provides a library and tool that is useful for retrieving software metadata and making it easily accessible to programs which need it.
+      spdx: 'LGPL-2.1-or-later GPL-2.0-or-later'
+      website: 'https://www.freedesktop.org/wiki/Distributions/AppStream/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    from_source: 'appstream'
+    tools_required:
+      - cross-toolchain
+      - host-appstream
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - curl
+      - glib
+      - libxml
+      - libxmlb
+      - libyaml
+    revision: 1
+    configure:
+      - args: ['mkdir', '-pv', '@THIS_BUILD_DIR@/data']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/data/org.freedesktop.appstream.cli.metainfo.xml', '@THIS_BUILD_DIR@/data/nol10n_withrelinfo_org.freedesktop.appstream.cli.metainfo.xml']
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-appstream.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dapidocs=false'
+        - '-Ddocs=false'
+        - '-Dcompose=false'
+        - '-Dmaintainer=false'
+        - '-Dstatic-analysis=false'
+        - '-Dstemming=false'
+        - '-Dvapi=false'
+        - '-Dapt-support=false'
+        - '-Dinstall-docs=false'
+        - '-Dgir=false'
+        - '-Dqt=false'
+        - '-Dsystemd=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: atk
     architecture: '@OPTION:arch@'
     stability_level: 'broken'
@@ -270,7 +372,7 @@ packages:
 
   - name: boost
     labels: [aarch64, riscv64]
-    architecture: noarch
+    architecture: '@OPTION:arch@'
     metadata:
       summary: Boost development headers and libraries
       description: This package provides the Boost headers and libraries.
@@ -296,7 +398,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 1
+    revision: 2
     configure:
       # boost does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -327,7 +429,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -420,7 +522,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -479,8 +581,8 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
     scripts:
         post_install:
-          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
-          - args: ['gio-querymodules /usr/lib/gio/modules']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
+          - args: ['gio-querymodules', '/usr/lib/gio/modules']
 
   - name: gmp
     architecture: '@OPTION:arch@'
@@ -510,7 +612,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -525,6 +627,67 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: gobject-introspection
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Introspection system for GObject-based libraries
+      description: Introspection system for GObject-based libraries
+      spdx: 'LGPL-2.0-or-later GPL-2.0-or-later'
+      website: 'https://gi.readthedocs.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    from_source: gobject-introspection
+    tools_required:
+      - cross-toolchain
+      - cross-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-gpep517
+      - host-gobject-introspection
+      - host-glib
+      - host-mlibc
+    pkgs_required:
+      - mlibc
+      - cairo
+      - glib
+      - libffi
+      - pcre2
+      - python
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dgi_cross_ldd_wrapper=ldd-wrapper'
+        - '-Dgi_cross_use_prebuilt_gi=true'
+        - '-Dbuild_introspection_data=true'
+        - '-Dgi_cross_pkgconfig_sysroot_path=@SYSROOT_DIR@'
+        - '-Dtests=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
+          GI_CROSS_LAUNCHER: 'run-wrapper'
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: icu
     architecture: '@OPTION:arch@'
@@ -542,7 +705,7 @@ packages:
     pkgs_required:
       - mlibc
       - libstdc++
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
@@ -584,6 +747,77 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: json-glib
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library providing GLib serialization and deserialization for the JSON format
+      description: This package contains a library providing serialization and deserialization support for the JavaScript Object Notation (JSON) format described by RFC 4627.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/JsonGlib'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gui-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/json-glib.git'
+      tag: '1.10.8'
+      version: '1.10.8'
+    tools_required:
+      - cross-toolchain
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+    pkgs_required:
+      - mlibc
+      - glib
+      - gobject-introspection
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        # Disabled on all architectures for now
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=disabled'
+          else: '-Dintrospection=disabled'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: kirigami-addons
     architecture: '@OPTION:arch@'
     metadata:
@@ -613,7 +847,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -664,7 +898,7 @@ packages:
       - libevdev
       - libxkbcommon
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -709,13 +943,50 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libevent
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to execute a function when a specific event occurs on a file descriptor
+      description: This package provides a library for asynchronous event notification.
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/libevent/libevent'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/libevent/libevent.git'
+      tag: 'release-2.1.12-stable'
+      version: '2.1.12'
+      tools_required:
+        - cross-toolchain
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - cross-toolchain
+    pkgs_required:
+      - mlibc
+      - openssl
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -738,7 +1009,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
@@ -772,7 +1043,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -810,7 +1081,7 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -853,7 +1124,7 @@ packages:
       - mlibc
       - glib
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -893,7 +1164,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -966,7 +1237,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1006,7 +1277,7 @@ packages:
       - libevdev
       - mtdev
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1044,7 +1315,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1097,7 +1368,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1125,7 +1396,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1171,6 +1442,112 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libportal
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Flatpak portal library
+      description: This package provides a library that contains GIO-style async APIs for most Flatpak portals.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/flatpak/libportal'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/flatpak/libportal.git'
+      tag: '0.9.1'
+      version: '0.9.1'
+    tools_required:
+      - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+      - host-glib
+      - host-vala
+    pkgs_required:
+      - mlibc
+      - glib
+      - gobject-introspection
+      - gtk+-3
+      - gtk4
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dbackend-gtk3=enabled'
+        - '-Dbackend-gtk4=enabled'
+        - '-Dbackend-qt5=disabled'
+        - '-Dbackend-qt6=disabled'
+        - '-Dportal-tests=false'
+        # Disabled on all architectures for now
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=false'
+          else: '-Dintrospection=false'
+        - '-Dvapi=true'
+        - '-Ddocs=false'
+        - '-Dtests=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+    build:
+      - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+
   - name: libtasn
     architecture: '@OPTION:arch@'
     metadata:
@@ -1199,7 +1576,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1246,7 +1623,6 @@ packages:
 
   - name: libunistring
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Library for manipulating Unicode and C strings according to Unicode standard
       description: This package provides a library containing functions for manipulating Unicode strings and for manipulating C strings according to the Unicode standard.
@@ -1256,10 +1632,10 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/libunistring/libunistring-0.9.10.tar.xz'
+      url: 'https://ftpmirror.gnu.org/libunistring/libunistring-1.4.2.tar.xz'
       format: 'tar.xz'
-      extract_path: 'libunistring-0.9.10'
-      version: '0.9.10'
+      extract_path: 'libunistring-1.4.2'
+      version: '1.4.2'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -1276,7 +1652,7 @@ packages:
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-static'
-        - '--docdir=/usr/share/doc/libunistring-0.9.10'
+        - '--docdir=/usr/share/doc/libunistring-1.4.2'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1336,7 +1712,7 @@ packages:
       - libiconv
       - readline
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1353,14 +1729,93 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libxmlb
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to help create and query binary XML blobs
+      description: This package provides a library and a tool which help create and query binary XML blobs.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/hughsie/libxmlb'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/hughsie/libxmlb.git'
+      tag: '0.3.23'
+      version: '0.3.23'
+    tools_required:
+      - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+      - host-glib
+      - cross-pkg-config
+    pkgs_required:
+      - mlibc
+      - glib
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
+      - xz-utils
+      - zstd
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dgtkdoc=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=true'
+          else: '-Dintrospection=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libxslt
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: XSLT libraries and tools
+      description: This package contains XSLT libraries used for extending libxml2 libraries to support XSLT files.
+      spdx: 'MIT'
+      website: 'https://gitlab.gnome.org/GNOME/libxslt'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxslt.git'
-      tag: 'v1.1.34'
-      version: '1.1.34'
+      tag: 'v1.1.45'
+      version: '1.1.45'
       tools_required:
         - cross-toolchain
       regenerate:
@@ -1393,6 +1848,41 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libyaml
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: YAML 1.1 parser and emitter written in C
+      description: This package contains a C library for parsing and emitting YAML (YAML Ain't Markup Language) code.
+      spdx: 'MIT'
+      website: 'https://github.com/yaml/libyaml'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/yaml/libyaml.git'
+      tag: '0.2.5'
+      version: '0.2.5'
+      tools_required:
+        - cross-toolchain
+      regenerate:
+        - args: ['autoreconf', '-f', '-i']
+    tools_required:
+      - cross-toolchain
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: mpc
     architecture: '@OPTION:arch@'
     metadata:
@@ -1417,7 +1907,7 @@ packages:
       - mlibc
       - gmp
       - mpfr
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1458,7 +1948,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1505,7 +1995,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1547,7 +2037,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
@@ -1593,7 +2083,7 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -1705,7 +2195,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
           - '@THIS_SOURCE_DIR@/Configure'
@@ -1755,7 +2245,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
           - '@THIS_SOURCE_DIR@/configure'
@@ -1800,7 +2290,7 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1840,7 +2330,7 @@ packages:
     pkgs_required:
       - mlibc
       - wayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1878,7 +2368,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1925,7 +2415,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1968,7 +2458,7 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -2027,7 +2517,7 @@ packages:
       - wayland-protocols
       - xcb-util-cursor
       - xwayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'

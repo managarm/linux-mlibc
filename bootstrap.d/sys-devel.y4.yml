@@ -93,7 +93,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -149,7 +149,7 @@ tools:
     from_source: gcc
     tools_required:
       - cross-binutils
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -391,7 +391,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 2
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -509,7 +509,7 @@ packages:
       - mlibc
       - ncurses
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -598,7 +598,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args: 
         - '@THIS_SOURCE_DIR@/configure'

@@ -1,7 +1,17 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
+sources:
+  - name: webkitgtk
+    subdir: ports
+    git: 'https://github.com/WebKit/WebKit.git'
+    tag: 'webkitgtk-2.50.0'
+    version: '2.50.0'
+
 packages:
   - name: glib-networking
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: Network-related giomodules for glib
       description: This package contains network related gio modules for GLib.
@@ -12,8 +22,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/glib-networking.git'
-      tag: '2.70.0'
-      version: '2.70.0'
+      tag: '2.72.2'
+      version: '2.72.2'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -31,7 +41,6 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        #- '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dgnutls=enabled'
         - '-Dopenssl=disabled'
@@ -45,14 +54,12 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-    # xbps broke?
-    # scripts:
-    #     post_install:
-    #       - args: ['gio-querymodules', '/usr/lib/gio/modules']
+    scripts:
+        post_install:
+          - args: ['gio-querymodules', '/usr/lib/gio/modules']
 
   - name: gnutls
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: A secure communications library implementing the SSL, TLS and DTLS protocols
       description: This package contains libraries and userspace tools which provide a secure layer over a reliable transport layer. Currently the GnuTLS library implements the proposed standards by the IETF's TLS working group.
@@ -131,7 +138,7 @@ packages:
       - mlibc
       - libintl
       - libtirpc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -147,7 +154,6 @@ packages:
 
   - name: libpsl
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
       summary: C library for the Public Suffix List
       description: This package provides a library for accessing and resolving information from the Public Suffix List (PSL). The PSL is a set of domain names beyond the standard suffixes, such as .com.
@@ -158,12 +164,13 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/rockdaboot/libpsl.git'
-      tag: '0.21.1'
-      version: '0.21.1'
+      tag: '0.23.3'
+      version: '0.23.3'
       tools_required:
         - cross-toolchain
       regenerate:
         - args: ['./autogen.sh']
+          isolate_network: false
     tools_required:
       - cross-toolchain
     pkgs_required:
@@ -193,12 +200,18 @@ packages:
 
   - name: libsoup
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
+    metadata:
+      summary: https://wiki.gnome.org/Projects/libsoup
+      description: This package is a HTTP client/server library for GNOME. It uses GObject and the GLib main loop to integrate with GNOME applications and it also has an asynchronous API for use in threaded applications.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/libsoup'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libsoup.git'
-      tag: '2.74.2'
-      version: '2.74.2'
+      tag: '2.74.3'
+      version: '2.74.3'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -219,7 +232,6 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        #- '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dintrospection=disabled'
         - '-Dinstalled_tests=false'
@@ -235,6 +247,104 @@ packages:
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libsoup3
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: HTTP client/server library for GNOME
+      description: This package provides a HTTP client/server library for GNOME. It uses GObject and the GLib main loop to integrate with GNOME applications and it also has an asynchronous API for use in threaded applications.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/libsoup'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/libsoup.git'
+      tag: '3.6.5'
+      version: '3.6.5'
+    tools_required:
+      - cross-toolchain
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-vala
+      - host-glib
+    pkgs_required:
+      - mlibc
+      - brotli
+      - glib
+      - glib-networking
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
+      - libpsl
+      - nghttp2
+      - sqlite
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--wrap-mode=nofallback'
+        - '--buildtype=debugoptimized'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
+        - '-Dinstalled_tests=false'
+        - '-Dsysprof=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dvapi=enabled'
+          else: '-Dvapi=disabled'
+        - '-Dtls_check=false'
+        - '-Dbrotli=disabled'
+        - '-Dntlm=disabled'
+        - '-Dgssapi=disabled'
+        - '-Dtests=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+    build:
+      - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -262,7 +372,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -272,6 +382,56 @@ packages:
         - '--disable-static'
         - '--disable-ipv6'
         - '--disable-gssapi'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: nghttp2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: HTTP/2 C Library
+      description: This package provides an implementation of HTTP/2 and its header compression algorithm, HPACK.
+      spdx: 'MIT'
+      website: 'https://nghttp2.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/nghttp2/nghttp2.git'
+      tag: 'v1.46.0'
+      version: '1.46.0'
+      tools_required:
+        - cross-toolchain
+        - host-xorg-macros
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - cross-toolchain
+    pkgs_required:
+      - mlibc
+      - boost
+      - c-ares
+      - libevent
+      - libxml
+      - openssl
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-lib-only'
+        - '--docdir=/usr/share/doc/nghttp2-1.46.0'
+        - '--disable-examples'
+        - '--disable-failmalloc'
+        - '--disable-python-bindings'
+        - '--disable-werror'
+        - '--without-cython'
+        - '--enable-threads'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -307,3 +467,93 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
       # Nuke the generator, host only
       - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/bin']
+
+  - name: webkitgtk4
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: 'An open source web browser engine, with a small example browser'
+      description: 'This package provides WebKitGTK, a port of the portable web rendering engine WebKit to the GTK+ 3 and GTK 4 platforms.'
+      spdx: 'LGPL-2.0-or-later BSD-2-Clause'
+      website: 'https://webkitgtk.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    from_source: webkitgtk
+    tools_required:
+      - cross-toolchain
+      - cross-cmake
+      - wayland-scanner
+      - host-glib
+    pkgs_required:
+      - mlibc
+      - at-spi2-core
+      - cairo
+      - fontconfig
+      - freetype
+      - glib
+      - gst-plugins-bad
+      - gst-plugins-base
+      - gst-plugins-good
+      - gtk4
+      - harfbuzz
+      - icu
+      - libgcrypt
+      - libjpeg-turbo
+      - libpng
+      - libsoup3
+      - libtasn
+      - libwebp
+      - libx11
+      - libxcomposite
+      - libxdamage
+      - libxml
+      - libxrender
+      - libxslt
+      - libxt
+      - mesa
+      - shared-mime-info
+      - sqlite
+      - systemd
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_SKIP_RPATH=ON'
+        - '-DPORT=GTK'
+        - '-DUSE_GTK4=ON'
+        - '-DLIB_INSTALL_DIR=/usr/lib'
+        - '-DUSE_LIBHYPHEN=OFF'
+        - '-DENABLE_GAMEPAD=OFF'
+        - '-DENABLE_MINIBROWSER=ON'
+        - '-DUSE_WOFF2=OFF'
+        - '-DENABLE_BUBBLEWRAP_SANDBOX=OFF'
+        - '-Wno-dev -G Ninja'
+        - '-DUSE_SYSTEM_MALLOC=ON'
+        - '-DENABLE_GEOLOCATION=OFF'
+        - '-DENABLE_VIDEO=ON'
+        - '-DENABLE_WEB_AUDIO=ON'
+        - '-DENABLE_INTROSPECTION=OFF'
+        - '-DUSE_LIBSECRET=OFF'
+        - '-DENABLE_SPELLCHECK=OFF'
+        - '-DENABLE_WAYLAND_TARGET=ON'
+        - '-DENABLE_X11_TARGET=ON'
+        - '-DENABLE_WEBGL=ON'
+        - '-DUSE_SOUP2=OFF'
+        - '-DUSE_LCMS=OFF'
+        - '-DENABLE_SPEECH_SYNTHESIS=OFF'
+        - '-DUSE_JPEGXL=OFF'
+        - '-DUSE_AVIF=OFF'
+        - '-DUSE_LIBBACKTRACE=OFF'
+        - '-DUSE_SYSPROF_CAPTURE=NO'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja', '-j10']
+        isolate_network: false
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

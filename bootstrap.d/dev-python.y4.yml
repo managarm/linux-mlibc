@@ -1,0 +1,113 @@
+sources:
+  - name: flit_core
+    subdir: 'ports'
+    git: 'https://github.com/pypa/flit.git'
+    tag: '3.12.0'
+    version: '3.12.0'
+
+  - name: hatchling
+    subdir: 'ports'
+    git: 'https://github.com/pypa/hatch.git'
+    tag: 'hatchling-v1.27.0'
+    version: '1.27.0'
+
+  - name: hatch-fancy-pypi-readme
+    subdir: 'ports'
+    git: 'https://github.com/hynek/hatch-fancy-pypi-readme.git'
+    tag: '25.1.0'
+    version: '25.1.0'
+
+  - name: hatch-vcs
+    subdir: 'ports'
+    git: 'https://github.com/ofek/hatch-vcs.git'
+    tag: 'v0.5.0'
+    version: '0.5.0'
+
+  # - name: maturin
+  #   subdir: 'ports'
+  #   git: 'https://github.com/PyO3/maturin.git'
+  #   tag: 'v1.9.6'
+  #   version: '1.9.6'
+
+  - name: pdm
+    subdir: 'ports'
+    git: 'https://github.com/pdm-project/pdm.git'
+    tag: '2.25.9'
+    version: '2.25.9'
+
+  - name: pdm-backend
+    subdir: 'ports'
+    git: 'https://github.com/pdm-project/pdm-backend.git'
+    tag: '2.4.5'
+    version: '2.4.5'
+
+  - name: setuptools
+    subdir: 'ports'
+    git: 'https://github.com/pypa/setuptools.git'
+    tag: 'v80.9.0'
+    version: '80.9.0'
+
+tools:
+  - name: host-gpep517
+    architecture: noarch
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/gentoo/gpep517.git'
+      tag: 'v19'
+      version: '19'
+    sources_required:
+      - flit_core
+      - hatchling
+      - hatch-fancy-pypi-readme
+      - hatch-vcs
+      # - maturin
+      - pdm
+      - pdm-backend
+      # - rust-patched-libs
+      - setuptools
+    tools_required:
+      - tool: host-python
+        recursive: true
+        # host-gpep517 uses a venv with a python3 symlink.
+        # Avoid exposing the original python3.
+        expose: false
+      # - host-cargo
+    revision: 11
+    install:
+      - args: ['@BUILD_ROOT@/tools/host-python/bin/python3', '-m', 'venv', '.']
+        workdir: '@PREFIX@'
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      # We need to install setuptools into the same venv, because build systems can use it
+      # Note that other build systems might need more dependencies installed in the venv for gpep517 to work with them
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../setuptools']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../flit_core']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatchling']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      # Yes these plugins are needed, yes I think that's annoying too
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatch-fancy-pypi-readme']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatch-vcs']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../pdm']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../pdm-backend']
+        workdir: '@PREFIX@'
+        isolate_network: false
+    #   - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/../maturin/Cargo.toml']
+    #     isolate_network: false
+    #   - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../maturin']
+    #     workdir: '@PREFIX@'
+    #     isolate_network: false
+    #     environ:
+    #       CARGO_BUILD_TARGET: 'x86_64-unknown-linux-gnu'
+    #       MATURIN_NO_INSTALL_RUST: '1'

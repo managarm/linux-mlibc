@@ -1,0 +1,32 @@
+From 8872e43e48b084e11290ba37f346d392d579ea77 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 25 Aug 2026 16:46:43 +0200
+Subject: [PATCH 3/3] Work around lack of tgmath.h
+
+---
+ gcc/config.gcc | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index 1d59563b2..7485158f5 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -929,7 +929,14 @@ case ${target} in
+   # Assume that glibc or uClibc or Bionic are being used and so __cxa_atexit
+   # is provided.
+   default_use_cxa_atexit=yes
+-  use_gcc_tgmath=no
++  case $target in
++    *-*-*mlibc*)
++      use_gcc_tgmath=yes
++      ;;
++    *)
++      use_gcc_tgmath=no
++      ;;
++  esac
+   use_gcc_stdint=wrap
+   # Enable compilation for Android by default for *android* targets.
+   case $target in
+-- 
+2.55.0
+

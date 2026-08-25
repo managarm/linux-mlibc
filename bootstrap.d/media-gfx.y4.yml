@@ -13,7 +13,7 @@ packages:
     pkgs_required:
       - mlibc
       - libstdc++
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -50,7 +50,7 @@ packages:
     pkgs_required:
       - mlibc
       - libpng
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: libxtrans
     subdir: ports
@@ -59,7 +63,7 @@ packages:
       - libxrender
       - mesa
       - pixman
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -94,15 +98,26 @@ packages:
       - cross-toolchain
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+      - host-glib
     pkgs_required:
       - mlibc
       - glib
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
       - libjpeg-turbo
       - libpng
       - libtiff
       - libx11
       - shared-mime-info
-    revision: 1
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -110,13 +125,33 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dman=false'
         - '-Dglycin=disabled'
         - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
     build:
       - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -172,7 +207,7 @@ packages:
       - pango
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -222,7 +257,7 @@ packages:
         triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -281,7 +316,7 @@ packages:
       - xorg-proto
       - xorg-util-macros
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -320,7 +355,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -360,7 +395,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -408,7 +443,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -446,7 +481,7 @@ packages:
       - mlibc
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -492,7 +527,7 @@ packages:
       - xcb-proto
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
@@ -542,7 +577,7 @@ packages:
       - libxfixes
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -580,7 +615,7 @@ packages:
       - libxrender
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -616,7 +651,7 @@ packages:
         triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -655,7 +690,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -691,7 +726,7 @@ packages:
       - libxau
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -733,7 +768,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -772,7 +807,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -823,7 +858,7 @@ packages:
       - xorg-proto
       - xorg-util-macros
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -864,7 +899,7 @@ packages:
       - libxrender
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -905,7 +940,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -952,7 +987,7 @@ packages:
       - libxext
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -989,7 +1024,7 @@ packages:
       - wayland
       - wayland-protocols
       - xkeyboard-config
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1029,7 +1064,7 @@ packages:
       - libx11
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1073,7 +1108,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1112,7 +1147,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1162,7 +1197,7 @@ packages:
       - libxext
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1201,7 +1236,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1218,14 +1253,16 @@ packages:
 
   - name: libxt
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxt.git'
-      tag: 'libXt-1.2.1'
-      version: '1.2.1'
+      tag: 'libXt-1.3.1'
+      version: '1.3.1'
       tools_required:
-        - cross-toolchain
+        - cross-autoconf-v2.71
+        - cross-automake-v1.16
+        - cross-pkg-config
+        - cross-libtool
         - host-xorg-macros
         - cross-autoconf-archive
       regenerate:
@@ -1269,7 +1306,7 @@ packages:
       - libxcb
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1309,7 +1346,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1349,7 +1386,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1384,6 +1421,13 @@ packages:
       - host-glib
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
     pkgs_required:
       - mlibc
       - cairo
@@ -1391,13 +1435,16 @@ packages:
       - freetype
       - fribidi
       - glib
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
       - harfbuzz
       - libx11
       - libxext
       - libxft
       - libxtrans
       - xorg-proto
-    revision: 1
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1406,11 +1453,31 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=release'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
     build:
       - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -1437,7 +1504,7 @@ packages:
       - mlibc
       - glib
       - libpng
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1481,7 +1548,7 @@ packages:
       - libxtrans
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1524,7 +1591,7 @@ packages:
       - xcb-util-render-util
       - xorg-proto
       - xcb-util
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1563,7 +1630,7 @@ packages:
       - xcb-util
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1603,7 +1670,7 @@ packages:
       - xcb-util
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1643,7 +1710,7 @@ packages:
       - xcb-util
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1682,7 +1749,7 @@ packages:
       - xcb-util
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 packages:
   - name: alsa-lib
     architecture: '@OPTION:arch@'
@@ -21,7 +25,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -60,7 +64,7 @@ packages:
       - freetype
       - libiconv
       - libxml
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -101,7 +105,7 @@ packages:
       - glu
       - libxi
       - mesa
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -157,7 +161,7 @@ packages:
       - bzip2
       - libpng
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -187,7 +191,7 @@ packages:
       - mlibc
       - glu
       - mesa
-    revision: 1
+    revision: 2
     configure:
       # These two seds lets the build system respect the GCC variable
       - args: ['sed', '-i', 's/CC = cc/CC = $(GCC)/g', '@THIS_SOURCE_DIR@/config/Makefile.linux']
@@ -220,7 +224,7 @@ packages:
       - mlibc
       - libstdc++
       - mesa
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -237,21 +241,95 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: graphene
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A thin layer of types for graphic libraries
+      description: This package provides a thin layer of types for graphics libraries.
+      spdx: 'MIT'
+      website: 'https://ebassi.github.io/graphene/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/ebassi/graphene.git'
+      tag: '1.10.8'
+      version: '1.10.8'
+    tools_required:
+      - cross-toolchain
+      - cross-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+      - host-glib
+    pkgs_required:
+      - mlibc
+      - glib
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '-Dgtk_doc=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
+        - '-Dtests=false'
+        - '-Dinstalled_tests=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gst-plugins-bad
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
-      # summary: Basepack of plugins for GStreamer
-      # description: The GStreamer Base Plug-ins is a well-groomed and well-maintained collection of GStreamer plug-ins and elements, spanning the range of possible types of elements one would want to write for GStreamer.
-      spdx: 'LGPL-2.0-or-later GPL-2.0-or-later'
+      summary: Less plugins for GStreamer
+      description: The GStreamer Bad Plug-ins package contains a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.
+      spdx: 'LGPL-2.0-only'
       website: 'https://gstreamer.freedesktop.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.28.1.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-bad-1.28.1'
+      checksum: blake2b:9cdec850d0d949dbbeb27ead1b290d45bc7899653b3f1f65c865f967a708128692fe908200c477820f24fce8a5d9060a9e04424f0de91f50ed698b9163b65105
+      version: '1.28.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -263,6 +341,7 @@ packages:
       - curl
       - glib
       - gstreamer
+      - gst-plugins-base
       - lcms
       - libdrm
       - libgudev
@@ -289,8 +368,8 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dexamples=disabled'
-        - '-Dpackage-origin=https://github.com/no92/linux-mlibc/'
-        - '-Dpackage-name="GStreamer 1.19.1 Linux-mlibc"'
+        - '-Dpackage-origin=https://github.com/managarm/linux-mlibc/'
+        - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -342,7 +421,7 @@ packages:
       - wayland
       - wayland-protocols
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -356,7 +435,7 @@ packages:
         - '--wrap-mode=nodownload'
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
-        - '-Dpackage-origin=https://github.com/managarm /linux-mlibc/'
+        - '-Dpackage-origin=https://github.com/managarm/linux-mlibc/'
         - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -367,19 +446,20 @@ packages:
 
   - name: gst-plugins-good
     architecture: '@OPTION:arch@'
-    stability_level: 'broken'
     metadata:
-      # summary: Basepack of plugins for GStreamer
-      # description: The GStreamer Base Plug-ins is a well-groomed and well-maintained collection of GStreamer plug-ins and elements, spanning the range of possible types of elements one would want to write for GStreamer.
-      spdx: 'LGPL-2.0-or-later GPL-2.0-or-later'
+      summary: Basepack of plugins for GStreamer
+      description: The GStreamer Good Plug-ins is a set of plug-ins considered by the GStreamer developers to have good quality code, correct functionality, and the preferred license (LGPL for the plug-in code, LGPL or LGPL-compatible for the supporting library). A wide range of video and audio decoders, encoders, and filters are included.
+      spdx: 'LGPL-2.1-or-later'
       website: 'https://gstreamer.freedesktop.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-good.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.28.1.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-good-1.28.1'
+      checksum: blake2b:fee7ff060b0281672ffb8f081ea7f656d5813580307b578b9262dca3f153cc24efb6c89f54d3d87da620e5ac220723a43fc1cfe3d56c1abd2450d004e317e030
+      version: '1.28.1'
     tools_required:
       - cross-toolchain
       - virtual: pkgconfig-for-target
@@ -393,6 +473,7 @@ packages:
       - glib
       - gtk+-3
       - gstreamer
+      - gst-plugins-base
       - libjpeg-turbo
       - libpng
       - libsoup
@@ -416,8 +497,9 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dexamples=disabled'
-        - '-Dpackage-origin=https://github.com/no92/linux-mlibc/'
-        - '-Dpackage-name="GStreamer 1.19.1 Linux-mlibc"'
+        - '-Dpackage-origin=https://github.com/managarm/linux-mlibc/'
+        - '-Dpackage-name="GStreamer 1.28.1 Linux-mlibc"'
+        - '-Dv4l2=disabled' # Compilation failure, investigate later
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -448,7 +530,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -495,16 +577,27 @@ packages:
       - cross-toolchain
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
+      - !managarm::arch_dep
+        item: host-mlibc
+        arch: [x86_64]
+      - !managarm::arch_dep
+        item: host-gobject-introspection
+        arch: [x86_64]
+      - host-python
+      - host-glib
     pkgs_required:
       - mlibc
       - cairo
       - freetype
-      - graphite2
       - glib
+      - !managarm::arch_dep
+        item: gobject-introspection
+        arch: [x86_64]
+      - graphite2
       - icu
       - libgcc
       - zlib
-    revision: 1
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -522,12 +615,32 @@ packages:
         - '-Dicu=enabled'
         - '-Dfreetype=enabled'
         - '-Dcairo=enabled'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Ddocs=disabled'
         - '-Dtests=disabled' # Disabled due to a linking error
         - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
     build:
       - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -562,7 +675,7 @@ packages:
       - libjpeg-turbo
       - libtiff
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -609,7 +722,7 @@ packages:
       - gstreamer
       - libtool
       - libvorbis
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -649,7 +762,7 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -688,7 +801,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -724,7 +837,7 @@ packages:
       - libx11
       - mesa
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -761,7 +874,7 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -806,7 +919,7 @@ packages:
         triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -849,7 +962,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -889,7 +1002,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -930,7 +1043,7 @@ packages:
       - mlibc
       - libogg
       - libvorbis
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -979,7 +1092,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1026,7 +1139,7 @@ packages:
     pkgs_required:
       - mlibc
       - libogg
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1066,7 +1179,7 @@ packages:
       - libpng
       - libtiff
       # - sdl2
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1116,7 +1229,7 @@ packages:
       - wayland-protocols
       - zlib
       - zstd
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -1179,7 +1292,7 @@ packages:
       - cross-toolchain
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1214,7 +1327,7 @@ packages:
       - cross-cmake
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

@@ -35,7 +35,7 @@ packages:
       - mpfr
       - qtbase6
       - qt5compat
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -106,7 +106,7 @@ packages:
       - qt5compat
       - qtbase6
       - qtmultimedia6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

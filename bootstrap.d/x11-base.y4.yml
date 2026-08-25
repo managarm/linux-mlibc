@@ -33,7 +33,7 @@ packages:
       - libxdmcp
       - xorg-proto
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -69,7 +69,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -201,7 +201,7 @@ packages:
       - xcb-proto
       - xkbcomp
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'

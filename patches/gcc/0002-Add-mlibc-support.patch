@@ -1,7 +1,7 @@
 From 1dbe497193b20e9d0b29446ab99435b2af67344a Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 11 Jan 2026 16:00:15 +0100
-Subject: [PATCH 2/2] Add mlibc support
+Subject: [PATCH 2/3] Add mlibc support
 
 ---
  config.sub             |  4 ++--
@@ -165,5 +165,5 @@ index 0504dd963..1d0546f41 100755
    # All these tests are for C++; save the language and the compiler flags.
    # The CXXFLAGS thing is suspicious, but based on similar bits previously
 -- 
-2.51.0
+2.55.0
 

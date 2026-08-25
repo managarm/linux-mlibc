@@ -569,7 +569,12 @@ class UpdateFsAction:
         def plan_rsync(dir, exclude_files=[]):
             source = os.path.join(self.sysroot, dir)
             target = os.path.join(target_mntpoint, dir)
-            command = ["rsync", "--checksum", "-a", "--delete", source, target]
+            command = ["rsync", "--checksum", "-a", "--delete"]
+            if dir in ["bin", "lib", "sbin"]:
+                # rsync 3.5 rejects these user-owned merged-/usr links when
+                # the receiver runs as root.
+                command.append("--insecure-links")
+            command.extend([source, target])
             if exclude_files:
                 for f in exclude_files:
                     command.append(f"--exclude={os.path.join(f)}")

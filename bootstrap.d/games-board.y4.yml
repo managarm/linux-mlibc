@@ -22,7 +22,7 @@ packages:
       - qtbase6
       - qtmultimedia6
       - qtsvg6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

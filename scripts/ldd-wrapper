@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Basic script that naively mimicks ldd, required for g-ir-scanner
+
+# Unset LD_LIBRARY_PATH to avoid loading Managarm libraries when running host tools.
+unset LD_LIBRARY_PATH
+
+x86_64-linux-mlibc-objdump -p $1 | awk '/NEEDED/{print $2" => /usr/lib/"$2}'

@@ -16,7 +16,7 @@ packages:
       - mlibc
       - ncurses
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -54,7 +54,7 @@ packages:
       - mlibc
       - libintl
       - ncurses
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

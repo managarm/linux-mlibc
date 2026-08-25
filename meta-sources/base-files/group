@@ -33,4 +33,5 @@ systemd-oom:x:81:
 wheel:x:97:
 seat:x:202:
 users:x:999:
+user:x:1000:
 nogroup:x:65534:

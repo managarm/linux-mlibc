@@ -1,0 +1,240 @@
+From f8f72d1f97466ff1879b199c9c1aa4b832a372db Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 2 Jan 2022 00:19:17 +0100
+Subject: [PATCH] Initial Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Source/JavaScriptCore/heap/BlockDirectory.cpp     |  2 +-
+ Source/JavaScriptCore/runtime/MachineContext.h    | 12 ++++++------
+ Source/ThirdParty/ANGLE/src/common/SimpleMutex.h  |  2 +-
+ Source/ThirdParty/ANGLE/src/common/platform.h     |  2 +-
+ Source/WTF/wtf/InlineASM.h                        | 10 ++++++----
+ Source/WTF/wtf/PlatformHave.h                     |  4 ++--
+ Source/WTF/wtf/PlatformOS.h                       |  6 ++++++
+ Source/WTF/wtf/glib/FileSystemGlib.cpp            |  2 +-
+ Source/WebCore/platform/unix/SharedMemoryUnix.cpp |  6 ++++++
+ 9 files changed, 30 insertions(+), 16 deletions(-)
+
+diff --git a/Source/JavaScriptCore/heap/BlockDirectory.cpp b/Source/JavaScriptCore/heap/BlockDirectory.cpp
+index eed5dacf20ab..e95c6650d07a 100644
+--- a/Source/JavaScriptCore/heap/BlockDirectory.cpp
++++ b/Source/JavaScriptCore/heap/BlockDirectory.cpp
+@@ -68,7 +68,7 @@ void BlockDirectory::updatePercentageOfPagedOutPages(SimpleStats& stats)
+     // FIXME: We should figure out a solution for Windows and PlayStation.
+     // QNX doesn't have mincore(), though the information can be had. But since all mapped
+     // pages are resident, does it matter?
+-#if OS(UNIX) && !PLATFORM(PLAYSTATION) && !OS(QNX) && !OS(HAIKU)
++#if OS(UNIX) && !PLATFORM(PLAYSTATION) && !OS(QNX) && !OS(HAIKU) && !OS(MANAGARM)
+     size_t pageSize = WTF::pageSize();
+     ASSERT(!(MarkedBlock::blockSize % pageSize));
+     auto numberOfPagesInMarkedBlock = MarkedBlock::blockSize / pageSize;
+diff --git a/Source/JavaScriptCore/runtime/MachineContext.h b/Source/JavaScriptCore/runtime/MachineContext.h
+index 0232941cb632..79b35e65a4b8 100644
+--- a/Source/JavaScriptCore/runtime/MachineContext.h
++++ b/Source/JavaScriptCore/runtime/MachineContext.h
+@@ -177,7 +177,7 @@ static inline void*& stackPointerImpl(mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
+ 
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ 
+ #if CPU(X86_64)
+     return reinterpret_cast<void*&>((uintptr_t&) machineContext.gregs[REG_RSP]);
+@@ -294,7 +294,7 @@ static inline void*& framePointerImpl(mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
+ 
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ 
+ // The following sequence depends on glibc's sys/ucontext.h.
+ #if CPU(X86_64)
+@@ -452,7 +452,7 @@ static inline void*& instructionPointerImpl(mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
+ 
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ 
+ // The following sequence depends on glibc's sys/ucontext.h.
+ #if CPU(X86_64)
+@@ -624,7 +624,7 @@ inline void*& argumentPointer<1>(mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
+ 
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ 
+ // The following sequence depends on glibc's sys/ucontext.h.
+ #if CPU(X86_64)
+@@ -681,7 +681,7 @@ inline void* wasmInstancePointer(const mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
+ 
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ 
+ // The following sequence depends on glibc's sys/ucontext.h.
+ #if CPU(X86_64)
+@@ -798,7 +798,7 @@ inline void*& llintInstructionPointer(mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
+ 
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ 
+ // The following sequence depends on glibc's sys/ucontext.h.
+ #if CPU(X86_64)
+diff --git a/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h b/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h
+index 84ffa1a1da56..799a59942984 100644
+--- a/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h
++++ b/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h
+@@ -33,7 +33,7 @@
+ //
+ // There is no TSAN support for futex currently, so it is disabled in that case
+ #if !defined(ANGLE_WITH_TSAN)
+-#    if defined(ANGLE_PLATFORM_LINUX) || defined(ANGLE_PLATFORM_ANDROID)
++#    if (defined(ANGLE_PLATFORM_LINUX) && !defined(__managarm__)) || defined(ANGLE_PLATFORM_ANDROID)
+ // Linux has had futexes for a very long time.  Assume support.
+ #        define ANGLE_USE_FUTEX 1
+ #    elif defined(ANGLE_PLATFORM_WINDOWS) && !defined(ANGLE_ENABLE_WINDOWS_UWP) && \
+diff --git a/Source/ThirdParty/ANGLE/src/common/platform.h b/Source/ThirdParty/ANGLE/src/common/platform.h
+index 48d6c5dfa79c..d06b4cc62235 100644
+--- a/Source/ThirdParty/ANGLE/src/common/platform.h
++++ b/Source/ThirdParty/ANGLE/src/common/platform.h
+@@ -25,7 +25,7 @@
+ #    define ANGLE_PLATFORM_POSIX 1
+ #elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) ||              \
+     defined(__DragonFly__) || defined(__sun) || defined(__GLIBC__) || defined(__GNU__) || \
+-    defined(__QNX__) || defined(__Fuchsia__) || defined(__HAIKU__)
++    defined(__QNX__) || defined(__Fuchsia__) || defined(__HAIKU__) || defined(__managarm__)
+ #    define ANGLE_PLATFORM_POSIX 1
+ #else
+ #    error Unsupported platform.
+diff --git a/Source/WTF/wtf/InlineASM.h b/Source/WTF/wtf/InlineASM.h
+index 8b1c295e483a..1663e8a11c76 100644
+--- a/Source/WTF/wtf/InlineASM.h
++++ b/Source/WTF/wtf/InlineASM.h
+@@ -43,9 +43,9 @@
+ #define THUMB_FUNC_PARAM(name)
+ #endif
+ 
+-#if (OS(LINUX) || OS(FREEBSD) || OS(HAIKU) || OS(QNX)) && CPU(X86_64)
++#if (OS(LINUX) || OS(FREEBSD) || OS(HAIKU) || OS(MANAGARM) || OS(QNX)) && CPU(X86_64)
+ #define GLOBAL_REFERENCE(name) #name "@plt"
+-#elif OS(LINUX) && CPU(X86) && defined(__PIC__)
++#elif (OS(LINUX) || OS(MANAGARM)) && CPU(X86) && defined(__PIC__)
+ #define GLOBAL_REFERENCE(name) SYMBOL_STRING(name) "@plt"
+ #else
+ #define GLOBAL_REFERENCE(name) SYMBOL_STRING(name)
+@@ -70,7 +70,8 @@
+     || OS(HPUX)                \
+     || OS(NETBSD)              \
+     || OS(OPENBSD)             \
+-    || OS(QNX)
++    || OS(QNX)                 \
++    || OS(MANAGARM)
+     // ELF platform
+ #define HIDE_SYMBOL(name) ".hidden " #name
+ #else
+@@ -90,7 +91,8 @@
+     || OS(HURD)                \
+     || OS(NETBSD)              \
+     || OS(QNX)                 \
+-    || OS(WINDOWS)
++    || OS(WINDOWS)             \
++    || OS(MANAGARM)
+     // GNU as-compatible syntax.
+ #define LOCAL_LABEL_STRING(name) ".L" #name
+ #endif
+diff --git a/Source/WTF/wtf/PlatformHave.h b/Source/WTF/wtf/PlatformHave.h
+index b6a75541ac2c..b4a6ae1a83ed 100644
+--- a/Source/WTF/wtf/PlatformHave.h
++++ b/Source/WTF/wtf/PlatformHave.h
+@@ -229,7 +229,7 @@
+ #define HAVE_MACH_MEMORY_ENTRY 1
+ #endif
+ 
+-#if OS(DARWIN) || OS(FUCHSIA) || ((OS(FREEBSD) || OS(HAIKU) || OS(NETBSD) || OS(OPENBSD) || OS(LINUX) || OS(HURD) || OS(QNX)) && (CPU(X86_64) || CPU(ARM) || CPU(ARM64) || CPU(RISCV64)))
++#if OS(DARWIN) || OS(FUCHSIA) || OS(MANAGARM) || ((OS(FREEBSD) || OS(HAIKU) || OS(NETBSD) || OS(OPENBSD) || OS(LINUX) || OS(HURD) || OS(QNX)) && (CPU(X86_64) || CPU(ARM) || CPU(ARM64) || CPU(RISCV64)))
+ #define HAVE_MACHINE_CONTEXT 1
+ #endif
+ 
+@@ -238,7 +238,7 @@
+ #define HAVE_BACKTRACE_SYMBOLS 1
+ #endif
+ 
+-#if OS(DARWIN) || OS(HAIKU) || OS(LINUX) || OS(HURD)
++#if OS(DARWIN) || OS(HAIKU) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
+ #define HAVE_DLADDR 1
+ #endif
+ 
+diff --git a/Source/WTF/wtf/PlatformOS.h b/Source/WTF/wtf/PlatformOS.h
+index e3184e90a160..a0c37e5e61e2 100644
+--- a/Source/WTF/wtf/PlatformOS.h
++++ b/Source/WTF/wtf/PlatformOS.h
+@@ -131,6 +131,11 @@
+ #define WTF_OS_WINDOWS 1
+ #endif
+ 
++/* OS(MANAGARM) - Managarm */
++#if defined(__managarm__)
++#define WTF_OS_MANAGARM 1
++#endif
++
+ 
+ /* OS(UNIX) - Any Unix-like system */
+ #if    OS(AIX)              \
+@@ -142,6 +147,7 @@
+     || OS(LINUX)            \
+     || OS(NETBSD)           \
+     || OS(OPENBSD)          \
++    || OS(MANAGARM)         \
+     || defined(unix)        \
+     || defined(__unix)      \
+     || defined(__unix__)
+diff --git a/Source/WTF/wtf/glib/FileSystemGlib.cpp b/Source/WTF/wtf/glib/FileSystemGlib.cpp
+index 9f010bafabdb..6294949f8761 100644
+--- a/Source/WTF/wtf/glib/FileSystemGlib.cpp
++++ b/Source/WTF/wtf/glib/FileSystemGlib.cpp
+@@ -59,7 +59,7 @@ String filenameForDisplay(const String& string)
+ #endif
+ }
+ 
+-#if OS(LINUX)
++#if OS(LINUX) || OS(MANAGARM)
+ CString currentExecutablePath()
+ {
+     static char readLinkBuffer[PATH_MAX];
+diff --git a/Source/WebCore/platform/unix/SharedMemoryUnix.cpp b/Source/WebCore/platform/unix/SharedMemoryUnix.cpp
+index fe2bbaf946ad..2621383aeae3 100644
+--- a/Source/WebCore/platform/unix/SharedMemoryUnix.cpp
++++ b/Source/WebCore/platform/unix/SharedMemoryUnix.cpp
+@@ -47,8 +47,10 @@
+ 
+ #if HAVE(LINUX_MEMFD_H)
+ #include <linux/memfd.h>
++#if !OS(MANAGARM)
+ #include <sys/syscall.h>
+ #endif
++#endif
+ 
+ namespace WebCore {
+ 
+@@ -84,7 +86,11 @@ static UnixFileDescriptor createSharedMemory()
+     static bool isMemFdAvailable = true;
+     if (isMemFdAvailable) {
+         do {
++        #if OS(MANAGARM)
++            fileDescriptor = memfd_create("WebKitSharedMemory", MFD_CLOEXEC);
++        #else
+             fileDescriptor = syscall(__NR_memfd_create, "WebKitSharedMemory", MFD_CLOEXEC);
++        #endif
+         } while (fileDescriptor == -1 && errno == EINTR);
+ 
+         if (fileDescriptor != -1)
+-- 
+2.51.0
+
